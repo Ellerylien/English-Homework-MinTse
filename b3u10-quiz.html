@@ -3,179 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>國中英語文法通 3 - Unit 10 綜合測驗</title>
+    <title>國中英語文法通 3 - Unit 10</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary-color: #6a8fa8;
-            --primary-light: #c5d6e0;
-            --primary-dark: #3d5f73;
-            --secondary-color: #eef3f6;
+            --primary-color: #6b859e;
+            --primary-light: #cfd9e1;
+            --primary-dark: #465a6b;
+            --secondary-color: #f2f5f7;
             --text-color: #4a4a4a;
-            --accent-color: #e8a55d;
-            --success-color: #6a9680;
+            --accent-color: #c49a76;
+            --success-color: #728c7c;
             --error-color: #c27a74;
             --border-radius: 12px;
-            --shadow-tint: rgba(106, 143, 168, 0.16);
+            --shadow-tint: rgba(107, 133, 158, 0.16);
             --font-zh: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
             --font-en: "Inter", "Noto Sans TC", sans-serif;
         }
         * { box-sizing: border-box; }
-        @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
-        }
-        body {
-            font-family: var(--font-zh);
-            margin: 0; padding: 0;
-            background-color: #f7f9fb;
-            color: var(--text-color);
-            line-height: 1.6;
-        }
+        @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; } }
+        body { font-family: var(--font-zh); margin: 0; padding: 0; background: #fafafa; color: var(--text-color); line-height: 1.6; }
+        .practice-question, .quiz-question, .quiz-option, .cloze-article, .q-text { font-family: var(--font-en); }
+
         /* ===== Login Overlay ===== */
-        .login-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            background: linear-gradient(135deg, #3d5f73 0%, #6a8fa8 50%, #8db4cc 100%);
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
+        .login-overlay { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #3d5a6e 0%, #6b859e 50%, #93afc5 100%); display: flex; align-items: center; justify-content: center; transition: opacity .5s, visibility .5s; }
         .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .login-card {
-            background: #fff; border-radius: 20px; padding: 48px 40px;
-            max-width: 420px; width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-        .login-card h1 {
-            font-size: 1.6rem; color: var(--primary-dark);
-            margin: 0 0 6px; border: none; padding: 0;
-        }
-        .login-card .subtitle {
-            color: #8a9aa6; font-size: 0.95rem; margin-bottom: 32px;
-        }
-        .login-card label {
-            display: block; text-align: left;
-            font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);
-            margin-bottom: 6px; margin-top: 18px;
-        }
-        .login-card input[type="text"], .login-card input[type="number"] {
-            width: 100%; padding: 12px 16px; border: 2px solid var(--primary-light);
-            border-radius: 10px; font-size: 1rem; font-family: var(--font-zh);
-            transition: border-color 0.2s; outline: none;
-        }
+        .login-card { background: #fff; border-radius: 20px; padding: 48px 40px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,.2); text-align: center; }
+        .login-card h1 { font-size: 1.5rem; color: var(--primary-dark); margin: 0 0 6px; }
+        .login-card .subtitle { color: #8a9aa6; font-size: .92rem; margin-bottom: 28px; }
+        .login-card label { display: block; text-align: left; font-weight: 600; font-size: .88rem; color: var(--primary-dark); margin-bottom: 5px; margin-top: 16px; }
+        .login-card input { width: 100%; padding: 12px 16px; border: 2px solid var(--primary-light); border-radius: 10px; font-size: 1rem; font-family: var(--font-zh); outline: none; transition: border-color .2s; }
         .login-card input:focus { border-color: var(--primary-color); }
-        .login-card .login-btn {
-            margin-top: 28px; width: 100%; padding: 14px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: #fff; border: none; border-radius: 12px;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.2s;
-        }
-        .login-card .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--shadow-tint); }
-        .login-card .login-btn:active { transform: scale(0.97); }
-        .login-card .login-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .login-error { color: var(--error-color); font-size: 0.85rem; margin-top: 8px; min-height: 1.2em; }
+        .login-btn { margin-top: 24px; width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: transform .15s; }
+        .login-btn:hover { transform: translateY(-2px); }
+        .login-btn:active { transform: scale(.97); }
+        .login-error { color: var(--error-color); font-size: .85rem; margin-top: 8px; min-height: 1.2em; }
 
-        /* ===== Main Layout ===== */
-        .main-wrap {
-            max-width: 860px; margin: 0 auto; padding: 24px 20px 60px;
-        }
-        .quiz-header {
-            text-align: center; margin-bottom: 12px;
-        }
-        .quiz-header h1 {
-            font-size: 1.7rem; color: var(--primary-dark); margin: 0 0 4px;
-        }
-        .quiz-header .desc {
-            color: #7a8a93; font-size: 0.92rem; max-width: 600px; margin: 0 auto 8px;
-        }
-        .student-tag {
-            display: inline-block; background: var(--secondary-color);
-            color: var(--primary-dark); font-weight: 600;
-            padding: 4px 16px; border-radius: 20px; font-size: 0.88rem;
-            margin-bottom: 20px;
+        /* ===== Landing Page ===== */
+        #landing { display: none; max-width: 720px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+        #landing.show { display: block; }
+        .landing-tag { display: inline-block; background: var(--secondary-color); color: var(--primary-dark); font-weight: 600; padding: 4px 16px; border-radius: 20px; font-size: .86rem; margin-bottom: 24px; }
+        .landing-title { font-size: 1.8rem; color: var(--primary-dark); margin: 0 0 8px; }
+        .landing-sub { color: #7a8a93; font-size: .92rem; margin-bottom: 40px; }
+        .landing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width:560px) { .landing-grid { grid-template-columns: 1fr; } }
+        .landing-card { background: #fff; border-radius: 16px; padding: 36px 28px; box-shadow: 0 4px 20px var(--shadow-tint); border: 2px solid transparent; cursor: pointer; transition: transform .2s, border-color .25s, box-shadow .25s; text-align: center; }
+        .landing-card:hover { transform: translateY(-4px); border-color: var(--primary-light); box-shadow: 0 12px 36px var(--shadow-tint); }
+        .landing-card .icon { font-size: 2.8rem; margin-bottom: 16px; }
+        .landing-card h2 { font-size: 1.25rem; color: var(--primary-dark); margin: 0 0 8px; }
+        .landing-card p { font-size: .88rem; color: #7a8a93; margin: 0; }
+
+        /* ===== Grammar Mode ===== */
+        #grammarMode { display: none; }
+        #grammarMode.show { display: flex; min-height: 100vh; }
+
+        .topbar { display: none; position: sticky; top: 0; z-index: 1100; background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); color: #fff; padding: 14px 18px; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+        .topbar .title { font-weight: 700; letter-spacing: 1px; }
+        .hamburger { background: rgba(255,255,255,.15); border: none; color: #fff; width: 42px; height: 42px; border-radius: 10px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+        .hamburger:hover { background: rgba(255,255,255,.28); }
+
+        .sidebar { width: 280px; background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 100%); color: white; padding: 25px 20px; position: fixed; height: 100%; overflow-y: auto; transition: transform .35s cubic-bezier(.4,0,.2,1); z-index: 1000; box-shadow: 4px 0 15px rgba(0,0,0,.1); }
+        .sidebar h2 { font-size: 1.3rem; margin-bottom: 24px; border-bottom: 2px solid var(--accent-color); padding-bottom: 12px; color: #fff; text-align: center; }
+        .nav-links { list-style: none; padding: 0; margin: 0; }
+        .nav-links li { margin-bottom: 10px; }
+        .nav-links a { color: #e8f0ef; text-decoration: none; display: block; padding: 11px 14px; border-radius: 8px; cursor: pointer; font-size: .92rem; position: relative; overflow: hidden; transition: background .3s, padding-left .3s; }
+        .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,.2); color: #fff; font-weight: bold; padding-left: 20px; }
+        .nav-links a.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: var(--accent-color); }
+        .back-link { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.2); }
+        .back-link a { color: #cdd8e0 !important; }
+
+        .backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 999; opacity: 0; transition: opacity .3s; }
+        .backdrop.show-bd { display: block; opacity: 1; }
+
+        .g-main { flex: 1; margin-left: 280px; padding: 40px; max-width: 1000px; }
+        .g-section { display: none; background: white; padding: 36px; border-radius: var(--border-radius); box-shadow: 0 4px 24px var(--shadow-tint); margin-bottom: 30px; border-top: 5px solid var(--primary-color); opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .3s; }
+        .g-section.active { display: block; }
+        .g-section.visible { opacity: 1; transform: translateY(0); }
+        .g-section h1 { color: var(--primary-dark); border-bottom: 2px solid #eee; padding-bottom: 18px; margin-bottom: 28px; font-size: 1.7rem; }
+        .g-section h1::before { content: '🌤️'; margin-right: 12px; font-size: 1.6rem; }
+
+        .grammar-box { background: var(--secondary-color); padding: 24px; border-radius: var(--border-radius); border: 1px solid var(--primary-light); margin: 22px 0; }
+        .grammar-tag { background: var(--primary-color); color: white; padding: 4px 14px; border-radius: 20px; font-size: .88rem; font-weight: bold; display: inline-block; margin-bottom: 14px; }
+        .grammar-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 18px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow-tint); font-size: 1.02rem; }
+        .grammar-table th, .grammar-table td { border-bottom: 1px solid #e0e0e0; padding: 11px 14px; text-align: left; vertical-align: middle; }
+        .grammar-table th { background: var(--primary-color); color: white; font-weight: 600; }
+        .grammar-table tr:nth-child(even) { background: #f9fbfb; }
+        .practice-container { background: #fff; border: 2px dashed var(--primary-light); border-radius: var(--border-radius); padding: 10px 28px; margin-top: 28px; }
+        .practice-item { border-bottom: 1px solid #f0f0f0; padding: 22px 0; display: flex; flex-direction: column; }
+        .practice-item:last-child { border-bottom: none; }
+        .practice-question { font-weight: 600; font-size: 1.1rem; margin-bottom: 14px; color: #2c3e50; line-height: 1.8; }
+        .q-badge { background: var(--primary-light); color: var(--primary-dark); padding: 2px 8px; border-radius: 4px; font-size: .88rem; margin-right: 8px; font-weight: bold; }
+        .answer-btn { background: white; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 7px 22px; border-radius: 25px; cursor: pointer; font-size: .92rem; font-weight: 600; transition: background .2s, color .2s; align-self: flex-start; }
+        .answer-btn:hover { background: var(--primary-color); color: white; }
+        .answer-text { display: none; margin-top: 14px; color: #8b5b56; font-weight: bold; padding: 14px; background: #fdf6f5; border-radius: 8px; border-left: 5px solid var(--error-color); font-size: 1.05rem; font-family: var(--font-en); }
+
+        @media (max-width: 768px) {
+            .topbar { display: flex; }
+            .sidebar { width: 82%; max-width: 320px; position: fixed; top: 0; left: 0; transform: translateX(-105%); }
+            .sidebar.open { transform: translateX(0); }
+            .g-main { margin-left: 0; padding: 20px; }
+            .g-section { padding: 24px; }
+            .g-section h1 { font-size: 1.4rem; }
         }
 
-        /* ===== Progress ===== */
-        .progress-bar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(247,249,251,.92); backdrop-filter: blur(8px);
-            padding: 14px 20px; margin: 0 -20px 28px;
-            border-bottom: 1px solid #dde5eb;
-        }
-        .progress-head {
-            display: flex; justify-content: space-between; align-items: baseline;
-            max-width: 840px; margin: 0 auto 8px;
-            font-weight: 700; color: var(--primary-dark);
-        }
-        .progress-head .count { font-family: var(--font-en); }
-        .progress-head .count b { font-size: 1.2rem; }
-        .progress-track {
-            max-width: 840px; margin: 0 auto; height: 9px;
-            background: #dde5eb; border-radius: 999px; overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%; width: 0%; border-radius: 999px;
-            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
-            transition: width .45s cubic-bezier(.4,0,.2,1);
-        }
+        /* ===== Quiz Mode ===== */
+        #quizMode { display: none; max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+        #quizMode.show { display: block; }
+        .quiz-header { text-align: center; margin-bottom: 12px; }
+        .quiz-header h1 { font-size: 1.6rem; color: var(--primary-dark); margin: 0 0 4px; }
+        .quiz-header .desc { color: #7a8a93; font-size: .9rem; max-width: 600px; margin: 0 auto 8px; }
+        .student-tag { display: inline-block; background: var(--secondary-color); color: var(--primary-dark); font-weight: 600; padding: 4px 16px; border-radius: 20px; font-size: .86rem; margin-bottom: 16px; }
+        .back-to-landing { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18px; padding: 8px 18px; border-radius: 10px; border: 1.5px solid var(--primary-light); background: #fff; color: var(--primary-dark); font-weight: 600; font-size: .88rem; cursor: pointer; transition: background .15s; }
+        .back-to-landing:hover { background: var(--secondary-color); }
 
-        /* ===== Part Header ===== */
-        .part-head {
-            margin: 42px 0 22px; padding: 18px 22px;
-            background: linear-gradient(90deg, var(--secondary-color), transparent);
-            border-left: 6px solid var(--accent-color); border-radius: 8px;
-        }
-        .part-head h2 { margin: 0; font-size: 1.3rem; color: var(--primary-dark); }
-        .part-head .meta { font-size: .88rem; color: #7a8a93; margin-top: 4px; font-family: var(--font-en); }
+        /* Progress */
+        .progress-bar { position: sticky; top: 0; z-index: 100; background: rgba(250,250,250,.92); backdrop-filter: blur(8px); padding: 14px 20px; margin: 0 -20px 28px; border-bottom: 1px solid #dde5eb; }
+        .progress-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 700; color: var(--primary-dark); }
+        .progress-head .count b { font-size: 1.2rem; font-family: var(--font-en); }
+        .progress-track { height: 9px; background: #dde5eb; border-radius: 999px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--accent-color), var(--primary-color)); transition: width .45s cubic-bezier(.4,0,.2,1); }
 
-        /* ===== Question Card ===== */
-        .q-card {
-            background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius);
-            padding: 24px 26px; margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.02);
-            transition: border-color .25s ease; scroll-margin-top: 90px;
-        }
+        .part-head { margin: 38px 0 20px; padding: 16px 20px; background: linear-gradient(90deg, var(--secondary-color), transparent); border-left: 6px solid var(--accent-color); border-radius: 8px; }
+        .part-head h2 { margin: 0; font-size: 1.25rem; color: var(--primary-dark); }
+        .part-head .meta { font-size: .86rem; color: #7a8a93; margin-top: 4px; font-family: var(--font-en); }
+
+        /* Question cards */
+        .q-card { background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius); padding: 22px 24px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,.02); transition: border-color .25s; scroll-margin-top: 90px; }
         .q-card.answered { border-color: var(--primary-light); }
-        .q-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-        .q-num {
-            background: var(--primary-color); color: #fff;
-            width: 34px; height: 34px; flex: 0 0 34px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-en); font-weight: 700; font-size: .95rem;
-        }
-        .q-points { font-size: .78rem; color: var(--accent-color); font-weight: 700; font-family: var(--font-en); margin-left: auto; }
-        .q-text {
-            font-family: var(--font-en); font-size: 1.1rem; line-height: 1.85;
-            color: #2c3e50; font-weight: 600; margin-bottom: 16px;
-        }
-        .zh-toggle {
-            display: inline-block; margin-top: 6px;
-            font-family: var(--font-zh); font-size: .85rem; font-weight: 600;
-            color: var(--primary-color); background: none; border: none; padding: 0; cursor: pointer;
-            border-bottom: 1px dashed var(--primary-light); transition: color .2s;
-        }
-        .zh-toggle:hover { color: var(--primary-dark); }
-        .zh-hint {
-            display: none; font-family: var(--font-zh); font-weight: 500;
-            color: #7a8a93; font-size: .93rem; margin-top: 8px;
-            padding: 8px 12px; background: var(--secondary-color);
-            border-radius: 8px; border-left: 3px solid var(--primary-light);
-        }
+        .q-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .q-num { background: var(--primary-color); color: #fff; width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-en); font-weight: 700; font-size: .9rem; }
+        .q-points { font-size: .76rem; color: var(--accent-color); font-weight: 700; font-family: var(--font-en); margin-left: auto; }
+        .q-text { font-size: 1.08rem; line-height: 1.85; color: #2c3e50; font-weight: 600; margin-bottom: 14px; }
+        .zh-toggle { display: inline-block; margin-top: 6px; font-size: .83rem; font-weight: 600; color: var(--primary-color); background: none; border: none; padding: 0; cursor: pointer; border-bottom: 1px dashed var(--primary-light); }
+        .zh-hint { display: none; font-weight: 500; color: #7a8a93; font-size: .9rem; margin-top: 8px; padding: 8px 12px; background: var(--secondary-color); border-radius: 8px; border-left: 3px solid var(--primary-light); }
         .zh-hint.show { display: block; }
-
-        /* MC Options */
-        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        @media(max-width:560px){ .options { grid-template-columns: 1fr; } }
-        .option {
-            font-family: var(--font-en); background: #fafafa; border: 2px solid #ececec;
-            padding: 13px 16px; border-radius: 10px; cursor: pointer;
-            font-size: 1.02rem; transition: background .18s, border-color .18s, transform .12s; user-select: none;
-        }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+        @media(max-width:560px) { .options { grid-template-columns: 1fr; } }
+        .option { font-family: var(--font-en); background: #fafafa; border: 2px solid #ececec; padding: 12px 14px; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: background .18s, border-color .18s, transform .12s; user-select: none; }
         .option:hover { background: var(--secondary-color); border-color: var(--primary-light); transform: translateY(-2px); }
         .option.selected { background: #dfe9f0; border-color: var(--primary-color); color: var(--primary-dark); font-weight: 600; }
         .graded .option { cursor: default; pointer-events: none; }
@@ -184,137 +152,61 @@
         .option .mark { float: right; font-weight: 700; }
 
         /* Cloze */
-        .cloze-passage {
-            background: #fff; padding: 28px; border-radius: 10px;
-            border-left: 5px solid var(--accent-color); line-height: 2.1;
-            font-size: 1.1rem; font-family: var(--font-en);
-            margin-bottom: 28px; box-shadow: 0 2px 12px var(--shadow-tint);
-        }
-        .cloze-select {
-            font-family: var(--font-en); font-size: .95rem; font-weight: 600;
-            padding: 4px 8px; border: 2px solid var(--primary-light); border-radius: 6px;
-            background: #f7fafb; color: var(--primary-dark); cursor: pointer;
-            transition: border-color .2s;
-        }
+        .cloze-passage { background: #fff; padding: 26px; border-radius: 10px; border-left: 5px solid var(--accent-color); line-height: 2.1; font-size: 1.08rem; font-family: var(--font-en); margin-bottom: 26px; box-shadow: 0 2px 12px var(--shadow-tint); }
+        .cloze-select { font-family: var(--font-en); font-size: .93rem; font-weight: 600; padding: 4px 8px; border: 2px solid var(--primary-light); border-radius: 6px; background: #f7fafb; color: var(--primary-dark); cursor: pointer; }
         .cloze-select:focus { border-color: var(--primary-color); outline: none; }
         .cloze-select.filled { border-color: var(--primary-color); background: #e8f0f6; }
         .cloze-select.ok { border-color: var(--success-color); background: #eff5f1; }
         .cloze-select.bad { border-color: var(--error-color); background: #fdf6f5; }
-        .cloze-result { display: none; }
 
-        /* Explain block */
-        .explain { margin-top: 14px; font-size: .95rem; line-height: 1.7; }
+        .explain { margin-top: 12px; font-size: .93rem; line-height: 1.7; }
         .verdict { font-weight: 700; margin-bottom: 6px; padding: 8px 12px; border-radius: 8px; }
         .verdict.ok { background: #eff5f1; color: #3b5341; }
         .verdict.no { background: #fdf6f5; color: #8c423b; }
         .ans-line { margin: 6px 0; font-family: var(--font-en); }
 
-        /* ===== Canvas Handwriting ===== */
-        .hw-card {
-            background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius);
-            padding: 24px 26px; margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.02); scroll-margin-top: 90px;
-            transition: border-color .25s;
-        }
+        /* Canvas handwriting */
+        .hw-card { background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius); padding: 22px 24px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,.02); scroll-margin-top: 90px; }
         .hw-card.answered { border-color: var(--primary-light); }
-        .hw-prompt {
-            font-family: var(--font-en); font-size: 1.05rem; line-height: 1.8;
-            color: #2c3e50; font-weight: 600; margin-bottom: 6px;
-        }
-        .hw-prompt-zh {
-            font-family: var(--font-zh); font-size: .93rem; color: #7a8a93;
-            margin-bottom: 12px;
-        }
-        .hw-type-badge {
-            display: inline-block; font-size: .78rem; font-weight: 700;
-            padding: 2px 10px; border-radius: 12px; margin-bottom: 10px;
-        }
+        .hw-prompt { font-family: var(--font-en); font-size: 1.02rem; line-height: 1.8; color: #2c3e50; font-weight: 600; margin-bottom: 6px; }
+        .hw-prompt-zh { font-size: .9rem; color: #7a8a93; margin-bottom: 12px; }
+        .hw-type-badge { display: inline-block; font-size: .76rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; margin-bottom: 10px; }
         .hw-type-badge.fill { background: #e8f0f6; color: var(--primary-dark); }
         .hw-type-badge.compose { background: #fdf3e5; color: #9a6d30; }
-        .canvas-wrap {
-            position: relative; border: 2px solid var(--primary-light);
-            border-radius: 10px; overflow: hidden; background: #fff;
-            touch-action: none;
-        }
-        .canvas-wrap canvas {
-            display: block; width: 100%;
-            cursor: crosshair;
-        }
-        .canvas-toolbar {
-            display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
-        }
-        .canvas-btn {
-            font-family: var(--font-zh); font-size: .85rem; font-weight: 600;
-            padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--primary-light);
-            background: #fff; color: var(--primary-dark); cursor: pointer;
-            transition: background .15s, border-color .15s;
-        }
-        .canvas-btn:hover { background: var(--secondary-color); border-color: var(--primary-color); }
+        .canvas-wrap { position: relative; border: 2px solid var(--primary-light); border-radius: 10px; overflow: hidden; background: #fff; touch-action: none; }
+        .canvas-wrap canvas { display: block; width: 100%; cursor: crosshair; }
+        .canvas-toolbar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .canvas-btn { font-size: .83rem; font-weight: 600; padding: 5px 14px; border-radius: 8px; border: 1.5px solid var(--primary-light); background: #fff; color: var(--primary-dark); cursor: pointer; }
+        .canvas-btn:hover { background: var(--secondary-color); }
         .canvas-btn.danger { border-color: #e0b8b5; color: var(--error-color); }
-        .canvas-btn.danger:hover { background: #fdf6f5; }
-        .hw-answer-reveal {
-            margin-top: 12px; padding: 12px 16px; border-radius: 8px;
-            font-size: .95rem; line-height: 1.7; display: none;
-        }
+        .hw-answer-reveal { margin-top: 12px; padding: 12px 16px; border-radius: 8px; display: none; }
         .hw-answer-reveal.show { display: block; }
-        .hw-submitted-tag {
-            display: none; margin-top: 10px; font-size: .88rem; font-weight: 600;
-            color: var(--success-color); padding: 6px 14px;
-            background: #eff5f1; border-radius: 8px;
-        }
+        .hw-submitted-tag { display: none; margin-top: 10px; font-size: .86rem; font-weight: 600; color: var(--success-color); padding: 6px 14px; background: #eff5f1; border-radius: 8px; }
         .hw-submitted-tag.show { display: inline-block; }
 
-        /* ===== Action Zone ===== */
-        .action-zone { text-align: center; margin: 40px 0 30px; }
-        .submit-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: #fff; border: none; padding: 16px 48px;
-            border-radius: 14px; font-size: 1.15rem; font-weight: 700;
-            cursor: pointer; transition: transform .15s, box-shadow .2s;
-        }
-        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px var(--shadow-tint); }
-        .submit-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-        .submit-hint { margin-top: 10px; font-size: .88rem; color: #8a979e; font-weight: 600; }
-        .firebase-status {
-            margin-top: 12px; font-size: .85rem; font-weight: 600;
-            padding: 8px 16px; border-radius: 8px; display: none;
-        }
+        .action-zone { text-align: center; margin: 36px 0 28px; }
+        .submit-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; border: none; padding: 14px 44px; border-radius: 14px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: transform .15s; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+        .submit-hint { margin-top: 10px; font-size: .86rem; color: #8a979e; font-weight: 600; }
+        .firebase-status { margin-top: 12px; font-size: .83rem; font-weight: 600; padding: 8px 16px; border-radius: 8px; display: none; }
         .firebase-status.ok { display: block; background: #eff5f1; color: #3b5341; }
         .firebase-status.err { display: block; background: #fdf6f5; color: #8c423b; }
 
-        /* ===== Result ===== */
-        .result {
-            background: #fff; border-radius: 16px; padding: 40px 30px;
-            text-align: center; box-shadow: 0 8px 40px var(--shadow-tint);
-            border: 2px solid var(--primary-light);
-            margin: 30px 0; display: none;
-        }
+        .result { background: #fff; border-radius: 16px; padding: 36px 28px; text-align: center; box-shadow: 0 8px 40px var(--shadow-tint); border: 2px solid var(--primary-light); margin: 28px 0; display: none; }
         .result.show { display: block; }
-        .result-ring {
-            width: 140px; height: 140px; margin: 0 auto 20px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            background: conic-gradient(var(--primary-color) var(--pct, 0%), #e3e9ed var(--pct, 0%));
-        }
-        .result-ring .inner {
-            width: 112px; height: 112px; border-radius: 50%;
-            background: #fff; display: flex; align-items: center; justify-content: center;
-        }
-        .score-big { font-family: var(--font-en); font-size: 2.2rem; font-weight: 700; color: var(--primary-dark); }
-        .score-big span { font-size: 1rem; color: #8a979e; }
-        .grade-msg { font-size: 1.3rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
-        .sub-msg { font-size: .92rem; color: #7a8a93; margin-bottom: 20px; }
-        .breakdown { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
-        .b-item { text-align: center; }
-        .b-item b { display: block; font-family: var(--font-en); font-size: 1.2rem; color: var(--primary-dark); }
-        .b-item .bl { font-size: .82rem; color: #8a979e; }
-        .retry-btn {
-            margin-top: 24px; padding: 12px 36px;
-            background: var(--accent-color); color: #fff; border: none;
-            border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer;
-        }
-        .foot { text-align: center; margin-top: 40px; font-size: .8rem; color: #aab5be; }
+        .result-ring { width: 130px; height: 130px; margin: 0 auto 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--primary-color) var(--pct, 0%), #e3e9ed var(--pct, 0%)); }
+        .result-ring .inner { width: 105px; height: 105px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .score-big { font-family: var(--font-en); font-size: 2rem; font-weight: 700; color: var(--primary-dark); }
+        .score-big span { font-size: .95rem; color: #8a979e; }
+        .grade-msg { font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
+        .sub-msg { font-size: .9rem; color: #7a8a93; margin-bottom: 18px; }
+        .breakdown { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; }
+        .b-item b { display: block; font-family: var(--font-en); font-size: 1.15rem; color: var(--primary-dark); }
+        .b-item .bl { font-size: .8rem; color: #8a979e; }
+        .retry-btn { margin-top: 20px; padding: 10px 32px; background: var(--accent-color); color: #fff; border: none; border-radius: 10px; font-size: .95rem; font-weight: 700; cursor: pointer; }
+        .foot { text-align: center; margin-top: 36px; font-size: .78rem; color: #aab5be; }
 
-        /* ===== Animations ===== */
         @keyframes ex-pop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
         @keyframes ex-shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
     </style>
@@ -324,610 +216,621 @@
 <!-- ===== LOGIN ===== -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-        <h1>📝 Unit 10 綜合測驗</h1>
+        <h1>🌤️ Unit 10</h1>
         <div class="subtitle">國中英語文法通 3 · 天氣 / How long / Here 倒裝 / 虛主詞 it</div>
         <label for="loginName">姓名</label>
         <input type="text" id="loginName" placeholder="請輸入你的姓名" autocomplete="off">
         <label for="loginSeat">座號</label>
         <input type="number" id="loginSeat" placeholder="請輸入座號" min="1" max="99" autocomplete="off">
-        <button class="login-btn" id="loginBtn" onclick="doLogin()">開始測驗</button>
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">開始</button>
         <div class="login-error" id="loginError"></div>
     </div>
 </div>
 
-<!-- ===== MAIN ===== -->
-<div class="main-wrap" id="mainWrap" style="display:none;">
+<!-- ===== LANDING ===== -->
+<div id="landing">
+    <div class="landing-tag" id="landingTag"></div>
+    <h1 class="landing-title">Unit 10</h1>
+    <p class="landing-sub">選擇你想進行的項目</p>
+    <div class="landing-grid">
+        <div class="landing-card" onclick="enterGrammar()">
+            <div class="icon">📖</div>
+            <h2>文法重點</h2>
+            <p>10-1 到 10-6 的文法說明與練習</p>
+        </div>
+        <div class="landing-card" onclick="enterQuiz()">
+            <div class="icon">📝</div>
+            <h2>單元練習</h2>
+            <p>40 題綜合測驗（含手寫題）</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== GRAMMAR MODE ===== -->
+<div class="topbar" id="grammarTopbar">
+    <button class="hamburger" id="menuToggle" aria-label="開啟選單">☰</button>
+    <span class="title">Unit 10 文法重點</span>
+    <span style="width:42px"></span>
+</div>
+<div class="backdrop" id="backdrop"></div>
+<div id="grammarMode">
+    <nav class="sidebar" id="sidebar">
+        <h2>Unit 10</h2>
+        <ul class="nav-links">
+            <li><a onclick="showGSection('g10-1')" class="active">10-1 表示「天氣」的形容詞</a></li>
+            <li><a onclick="showGSection('g10-2')">10-2 表示「天氣」的直述句</a></li>
+            <li><a onclick="showGSection('g10-3')">10-3 詢問「天氣」的疑問句及答句</a></li>
+            <li><a onclick="showGSection('g10-4')">10-4 How long...? 的用法及答句</a></li>
+            <li><a onclick="showGSection('g10-5')">10-5 Here 的倒裝句</a></li>
+            <li><a onclick="showGSection('g10-6')">10-6 虛主詞 it 的用法</a></li>
+        </ul>
+        <div class="back-link"><a onclick="backToLanding()">← 回主頁</a></div>
+    </nav>
+    <main class="g-main">
+        <div id="g10-1" class="g-section active visible">
+            <h1>10-1 表示「天氣」的形容詞</h1>
+
+            <div class="grammar-box">
+                <span class="grammar-tag">文法說明</span>
+                <p>表示「天氣」的形容詞，前面要接 <strong>be 動詞</strong>，後面可接名詞。</p>
+                <table class="grammar-table" style="text-align: center;">
+                    <tr>
+                        <td>sunny 晴朗的</td><td>cloudy 多雲的</td><td>rainy 下雨的</td>
+                    </tr>
+                    <tr>
+                        <td>foggy 多霧的</td><td>snowy 下雪的</td><td>windy 有風的</td>
+                    </tr>
+                    <tr>
+                        <td>hot 炎熱的</td><td>warm 溫暖的</td><td>cool 涼爽的</td>
+                    </tr>
+                    <tr>
+                        <td>cold 寒冷的</td><td>dry 乾燥的</td><td>wet 潮濕的</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) We can't play badminton outside on a <strong>windy</strong> day.<br>
+                        我們在風大的日子沒辦法在室外打羽毛球。</li>
+                    <li>(2) It is usually very <strong>hot</strong> in Kaohsiung in summer.<br>
+                        高雄的夏天通常很炎熱。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice A: 翻譯填充。</h4>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> 倫敦的冬天是多霧的。<br>London ______________ very ______________ in winter.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">is / foggy</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> 夏天的山區是涼爽的嗎？<br>______________ it ______________ in the mountains in summer?</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Is / cool</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> 孩子們喜歡在下雪天在外面玩耍。<br>Children like to play outside on ______________ days.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">snowy</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> 我在溫暖又潮濕的日子會覺得不舒服。<br>I don't feel comfortable on ______________ and ______________ days.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">warm / wet</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="g10-2" class="g-section">
+            <h1>10-2 表示「天氣」的直述句</h1>
+
+            <div class="grammar-box">
+                <span class="grammar-tag">文法說明</span>
+                <p>表示「天氣」的直述句，有以下幾種寫法：</p>
+                <table class="grammar-table">
+                    <tr>
+                        <td rowspan="2" style="border-right: 1px solid #e0e0e0; text-align:center; font-weight:bold;">It +</td>
+                        <td style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; text-align:center;">be 動詞 + 表天氣的形容詞</td>
+                        <td rowspan="4" style="text-align:center;">+ 地名 + 季節 / 時間.</td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center;">表天氣的動詞</td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center; font-weight:bold;">There +</td>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center;">be 動詞 + 表天氣的名詞</td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center; font-weight:bold;">We / They +</td>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center;">have + 表天氣的名詞</td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #e0e0e0; text-align:center; font-weight:bold;">The weather +</td>
+                        <td colspan="2" style="text-align:center;">be 動詞 + 表天氣的形容詞</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) <strong>It was cloudy</strong> this morning. 今天早上是多雲的。</li>
+                    <li>(2) <strong>We have lots of rain</strong> in Keelung. 基隆常下雨。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice B: 請練習替換下列句子。</h4>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> There were three typhoons in Taiwan this year.<br>= We ______________ three ______________ in Taiwan this year.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">had / typhoons</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> It was a snowy day today.<br>= It ______________ today.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">snowed</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> It rains in London very often.<br>= It ______________ ______________ in London very often.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">is / rainy</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> Does it rain a lot here?<br>= ______________ ______________ a lot of ______________ here?</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Is / there / rain</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">5</span> Is it snowy in Canada in November?<br>= ______________ it ______________ in Canada in November?<br>= ______________ ______________ snow in Canada in November?<br>= ______________ they ______________ ______________ in Canada in November?</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Does / snow / Is / there / Do / have / snow</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="g10-3" class="g-section">
+            <h1>10-3 詢問「天氣」的疑問句及答句</h1>
+
+            <div class="grammar-box">
+                <table class="grammar-table">
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e6f0ef; width: 15%;">問句</td>
+                        <td><strong>How</strong> + be 動詞 + the weather + 地名 + 季節 / 時間?<br>
+                            <strong>What</strong> + be 動詞 + the weather + <strong>like</strong> + 地名 + 季節 / 時間?</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e8f4f8;">答句</td>
+                        <td>It + is / was + 表天氣的形容詞 + 地名 + 季節 / 時間.</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) A: <strong>How is the weather</strong> in Tokyo in spring? 春天時東京的天氣如何？<br>B: It is cold in Tokyo in spring. 春天時東京的天氣是寒冷的。</li>
+                    <li>(2) A: <strong>What is the weather like</strong> in Taipei in September? 台北九月的天氣如何？<br>B: It is sometimes hot and sometimes cool. 有時候炎熱，有時候涼爽。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice C: 請依題意或指示填入適當答案。</h4>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> A: ______________ is the ______________ there?<br>B: It's wet and warm.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">How / weather</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> A: ______________ it usually rain in Taichung in winter?<br>B: No. It's the dry season there in winter.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Does</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> A: ______________ the ______________ ______________ in Pingtung in summer?<br>B: It's hot and dry.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">What's / weather / like</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> Spring usually ______________ in March in Canada. It gets ______________ ______________ early April.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">comes / warm / in</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">5</span> It's usually <u>cool and windy</u> in Hsiungchu (新竹) in fall. (依畫線部分造原問句，並以 What 開頭)<br>________________________________________________________________________</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">What's the weather like in Hsiungchu in fall?</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="g10-4" class="g-section">
+            <h1>10-4 How long...? 的用法及答句</h1>
+
+            <div class="grammar-box">
+                <span class="grammar-tag">文法說明</span>
+                <p>「How long...?」用來詢問「(做某事)需要花(某人)多少時間」。</p>
+                <table class="grammar-table">
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e6f0ef; width: 15%;">問句</td>
+                        <td>How long + 助動詞 + it + take + 人 + to + 原形動詞 + 某事?</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e8f4f8;">答句</td>
+                        <td>It + takes / took + 人 + 時間 + to + 原形動詞 + 某事.</td>
+                    </tr>
+                </table>
+                <table class="grammar-table">
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e6f0ef; width: 15%;">問句</td>
+                        <td>How long + 助動詞 + 主詞 + 原形動詞 + 某事?</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; background-color: #e8f4f8;">答句</td>
+                        <td>主詞 + (助動詞)+ 動詞 + 某事 + 時間.</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) A: How long does it take you to make a seafood pizza? 做一個海鮮披薩花你多久時間？<br>B: It takes me thirty minutes. 花我三十分鐘。</li>
+                    <li>(2) A: How long do you plan to stay in England? 你計畫在英國待多久？<br>B: For about two weeks. 大約兩個星期。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice D: 請依題意或指示填入適當答案。</h4>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> A: How ______________ does it take ______________ drive to Taipei from here?<br>B: It usually ______________ about twenty minutes.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">long / to / takes</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> A: How ______________ ______________ your mother cook yesterday evening?<br>B: ______________ one hour.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">long / did / For</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> A: ______________ ______________ did you do your math homework last night?<br>B: I ______________ my math homework ______________ one and half hours last night.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">How / long / did / for</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> A: ______________ ______________ will it take you to wash and dry all the clothes?<br>B: It ______________ ______________ me about fifty-five minutes at least.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">How / long / will / take</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">5</span> How long did it take you to clean your room? (用 forty minutes 回答)<br>________________________________________________________________________</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">It took me forty minutes to clean my room.</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">6</span> It will take Jane <u>a whole year</u> to write the story. (依畫線部分造原問句)<br>________________________________________________________________________</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">How long will it take Jane to write the story?</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="g10-5" class="g-section">
+            <h1>10-5 Here 的倒裝句</h1>
+
+            <div class="grammar-box">
+                <span class="grammar-tag">文法說明</span>
+                <p>以 <strong>Here</strong> 為首的句子，為了強調句中的某一部分語意，而將敘述句句型的語詞變動位置，便形成倒裝句。倒裝句中動詞的單、複數由主詞決定。</p>
+                <table class="grammar-table">
+                    <tr>
+                        <td rowspan="2" style="text-align:center; font-weight:bold; border-right: 1px solid #e0e0e0; width: 15%;">Here +</td>
+                        <td style="text-align:center; border-bottom: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">be 動詞</td>
+                        <td rowspan="2" style="text-align:center; border-right: 1px solid #e0e0e0;">名詞 (主詞).</td>
+                        <td rowspan="2" style="text-align:center; background-color: #e6f0ef;">在這兒；這兒有 / 是...</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; border-right: 1px solid #e0e0e0;">一般動詞</td>
+                    </tr>
+                </table>
+                <table class="grammar-table">
+                    <tr>
+                        <td rowspan="2" style="text-align:center; font-weight:bold; border-right: 1px solid #e0e0e0; width: 15%;">Here +</td>
+                        <td rowspan="2" style="text-align:center; border-right: 1px solid #e0e0e0;">代名詞 (主詞)</td>
+                        <td style="text-align:center; border-bottom: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">be 動詞.</td>
+                        <td rowspan="2" style="text-align:center; background-color: #e8f4f8;">在這兒；這兒有 / 是...</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; border-right: 1px solid #e0e0e0;">一般動詞.</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) <strong>Here are</strong> the pictures of London. 這兒是倫敦的相片。</li>
+                    <li>(2) <strong>Here we are.</strong> 我們到了。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice E: 請依題意填入適當答案。</h4>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> Here is your camera. = Here ______________ is.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">it</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> Here are your shirts. = Here ______________ are.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">they</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> Here comes the bus. = Here ______________ comes.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">it</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> A: Could you lend me your dictionary? B: Sure. Here ______________ are.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">you</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">5</span> Here ______________ Peter and Curtis. = Here ______________ come.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">come / they</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">6</span> Here are your glass bottles. = Here ______________ are.</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">they</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="g10-6" class="g-section">
+            <h1>10-6 虛主詞 it 的用法</h1>
+
+            <div class="grammar-box">
+                <span class="grammar-tag">文法說明</span>
+                <p>虛主詞「it」當主詞時，it 並不是句子中真正的主詞，真正的主詞是在後面的「to + 原形動詞」(不定詞片語)。</p>
+                <table class="grammar-table">
+                    <tr>
+                        <td rowspan="2" style="text-align:center; font-weight:bold; border-right: 1px solid #e0e0e0; width: 15%;">It +</td>
+                        <td style="text-align:center; border-bottom: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">is</td>
+                        <td rowspan="2" style="text-align:center;">+ 形容詞 + for + 人 (受詞) + to + 原形動詞.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; border-right: 1px solid #e0e0e0;">is not</td>
+                    </tr>
+                </table>
+                <br>
+                <p><strong>例：</strong></p>
+                <ul>
+                    <li>(1) <strong>It is</strong> fun <strong>to play</strong> computer games. 玩電腦遊戲是很有趣的。</li>
+                    <li>(2) <strong>It is</strong> important for us <strong>to exercise</strong> every day. 每天做運動對我們而言是重要的。</li>
+                </ul>
+            </div>
+
+            <div class="practice-container">
+                <h4>Practice F: 請依提示造句。</h4>
+                <div class="practice-item" style="background:#f9f9f9; padding: 15px; border-radius: 8px;">
+                    <div class="practice-question">例：fun / watch / the baseball game / .<br><span style="color:var(--primary-color);">It is fun to watch the baseball game.</span></div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">1</span> wonderful / take a trip / Hualien / .</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">It is wonderful to take a trip to / in Hualien.</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">2</span> important / he / help / other people / .</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">It is important for him to help other people.</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">3</span> great / play tennis with you / next Saturday / .</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">It will / is going to be great to play tennis with you next Saturday.</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">4</span> not / easy / I / get a high grade / on the science test / .</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">It is not easy for me to get a high grade on the science test.</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">5</span> fun / Ron / visit that museum with his girlfriend / yesterday / ?</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Was it fun for Ron to visit that museum with his girlfriend yesterday?</div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-question"><span class="q-badge">6</span> safe / go biking / along the river / at night / ?</div>
+                    <button class="answer-btn" onclick="toggleAnswer(this)">顯示答案</button>
+                    <div class="answer-text">Is it safe to go biking along the river at night?</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ===== QUIZ MODE ===== -->
+<div id="quizMode">
+    <button class="back-to-landing" onclick="backToLanding()">← 回主頁</button>
     <div class="quiz-header">
         <h1>📝 Unit 10 綜合測驗</h1>
-        <div class="desc">共 40 題，滿分 100 分。選擇題自動批改，手寫題由老師批閱。全部作答完成後按交卷。</div>
-        <div class="student-tag" id="studentTag"></div>
+        <div class="desc">共 40 題，滿分 100 分。選擇題自動批改，手寫題由老師批閱。</div>
+        <div class="student-tag" id="studentTag2"></div>
     </div>
-
-    <div class="progress-bar">
-        <div class="progress-head">
-            <span>作答進度</span>
-            <span class="count"><b id="answeredCount">0</b> / 40 題</span>
-        </div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-
-    <div class="result" id="resultPanel">
-        <div class="result-ring" id="resultRing"><div class="inner"><div class="score-big" id="scoreBig">0<span>/100</span></div></div></div>
-        <div class="grade-msg" id="gradeMsg"></div>
-        <div class="sub-msg" id="subMsg"></div>
-        <div class="breakdown" id="breakdown"></div>
-        <button class="retry-btn" onclick="resetQuiz()">重新作答</button>
-    </div>
-
-    <!-- Part 1: MC -->
-    <div class="part-head">
-        <h2>第一部分 單題選擇</h2>
-        <div class="meta">Questions 1–30 · 每題 2 分 · 共 60 分</div>
-    </div>
+    <div class="progress-bar"><div class="progress-head"><span>作答進度</span><span class="count"><b id="answeredCount">0</b> / 40 題</span></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+    <div class="result" id="resultPanel"><div class="result-ring" id="resultRing"><div class="inner"><div class="score-big" id="scoreBig">0<span>/80</span></div></div></div><div class="grade-msg" id="gradeMsg"></div><div class="sub-msg" id="subMsg"></div><div class="breakdown" id="breakdown"></div><button class="retry-btn" onclick="resetQuiz()">重新作答</button></div>
+    <div class="part-head"><h2>第一部分 單題選擇</h2><div class="meta">Questions 1–30 · 每題 2 分 · 共 60 分</div></div>
     <div id="quizMC"></div>
-
-    <!-- Part 2: Cloze -->
-    <div class="part-head">
-        <h2>第二部分 克漏字選擇</h2>
-        <div class="meta">Questions 31–35 · 每題 4 分 · 共 20 分 · 請在短文空格的下拉選單中選擇答案</div>
-    </div>
+    <div class="part-head"><h2>第二部分 克漏字選擇</h2><div class="meta">Questions 31–35 · 每題 4 分 · 共 20 分</div></div>
     <div class="cloze-passage" id="clozePassage"></div>
     <div id="quizCloze"></div>
-
-    <!-- Part 3: Handwriting -->
-    <div class="part-head">
-        <h2>第三部分 手寫題</h2>
-        <div class="meta">Questions 36–40 · 每題 4 分 · 共 20 分 · 請在書寫區域內手寫作答</div>
-    </div>
+    <div class="part-head"><h2>第三部分 手寫題</h2><div class="meta">Questions 36–40 · 每題 4 分 · 共 20 分 · 請在書寫區域內手寫作答</div></div>
     <div id="quizHW"></div>
-
     <div class="action-zone">
         <button class="submit-btn" id="submitBtn" disabled onclick="gradeQuiz()">交卷看解析</button>
         <div class="submit-hint" id="submitHint">還有 40 題未作答</div>
         <div class="firebase-status" id="fbStatus"></div>
     </div>
-    <div class="foot">資料來源：國中英語文法通 3 (Unit 10) · 互動練習 · 滿分 100 分</div>
+    <div class="foot">資料來源：國中英語文法通 3 (Unit 10)</div>
 </div>
 
 <script>
-/* ================================================================
-   Firebase Config – 請替換為你自己的 Firebase 專案設定
-   ================================================================ */
+/* ============ Firebase Config ============ */
 const firebaseConfig = {
-  apiKey: "AIzaSyCoK3uaGyyG_7VXAysv2-zxfmqLly7N8rw",
-  authDomain: "english-homework-mintse.firebaseapp.com",
-  projectId: "english-homework-mintse",
-  storageBucket: "english-homework-mintse.firebasestorage.app",
-  messagingSenderId: "1065925021054",
-  appId: "1:1065925021054:web:5f58164f72a9e6aff0f72f"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
+let db=null, firebaseReady=false;
+try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();if(firebaseConfig.apiKey!=="YOUR_API_KEY")firebaseReady=true;}catch(e){}
 
-let db = null;
-let firebaseReady = false;
-try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    if (firebaseConfig.apiKey !== "YOUR_API_KEY") firebaseReady = true;
-} catch(e) { console.warn("Firebase init skipped:", e); }
-
-/* ================================================================
-   Login
-   ================================================================ */
-let studentName = '', studentSeat = '';
-function doLogin() {
-    const name = document.getElementById('loginName').value.trim();
-    const seat = document.getElementById('loginSeat').value.trim();
-    const errEl = document.getElementById('loginError');
-    if (!name) { errEl.textContent = '請輸入姓名'; return; }
-    if (!seat || isNaN(seat) || +seat < 1) { errEl.textContent = '請輸入有效座號'; return; }
-    studentName = name;
-    studentSeat = seat;
+/* ============ Login & Navigation ============ */
+let studentName='', studentSeat='';
+function doLogin(){
+    const n=document.getElementById('loginName').value.trim(), s=document.getElementById('loginSeat').value.trim();
+    const err=document.getElementById('loginError');
+    if(!n){err.textContent='請輸入姓名';return;} if(!s||isNaN(s)||+s<1){err.textContent='請輸入有效座號';return;}
+    studentName=n; studentSeat=s;
     document.getElementById('loginOverlay').classList.add('hidden');
-    document.getElementById('mainWrap').style.display = '';
-    document.getElementById('studentTag').textContent = `${studentName}（座號 ${studentSeat}）`;
-    initCanvases();
+    document.getElementById('landing').classList.add('show');
+    document.getElementById('landingTag').textContent=`${n}（座號 ${s}）`;
+    document.getElementById('studentTag2').textContent=`${n}（座號 ${s}）`;
+}
+function enterGrammar(){ document.getElementById('landing').classList.remove('show'); document.getElementById('grammarMode').classList.add('show'); showGSection('g10-1'); }
+function enterQuiz(){ document.getElementById('landing').classList.remove('show'); document.getElementById('quizMode').classList.add('show'); initCanvases(); }
+function backToLanding(){
+    document.getElementById('grammarMode').classList.remove('show');
+    document.getElementById('quizMode').classList.remove('show');
+    document.getElementById('landing').classList.add('show');
+    closeMenu();
 }
 
-/* ================================================================
-   Question Data
-   ================================================================ */
-// PART 1: MC 30 questions
-const mcQuestions = [
-    // 10-1 天氣形容詞 (1-5)
-    {skill:"10-1", q:"It's very ________ today. Don't forget to bring your umbrella.", zh:"今天下大雨。別忘了帶雨傘。", options:["sunny","rainy","dry","warm"], ans:1, exp:"要帶雨傘表示是下雨天，故選 <code>rainy</code>（下雨的）。"},
-    {skill:"10-1", q:"Be careful when you drive on a ________ day. You can't see the road clearly.", zh:"多霧的日子開車要小心。你看不清楚路。", options:["sunny","windy","foggy","snowy"], ans:2, exp:"看不清楚路，表示霧很大，故選 <code>foggy</code>（多霧的）。"},
-    {skill:"10-1", q:"It's very ________ in summer in Kaohsiung. Let's go swimming!", zh:"高雄的夏天很熱。我們去游泳吧！", options:["cold","cool","hot","foggy"], ans:2, exp:"夏天高雄很熱，適合游泳，故選 <code>hot</code>（炎熱的）。"},
-    {skill:"10-1", q:"Children like to play outside on ________ days.", zh:"孩子們喜歡在晴天到外面玩。", options:["rainy","foggy","cloudy","sunny"], ans:3, exp:"孩子喜歡在天氣好的日子出去玩，故選 <code>sunny</code>（晴朗的）。"},
-    {skill:"10-1", q:"I don't feel comfortable on ________ and wet days.", zh:"我在溫暖又潮濕的日子覺得不舒服。", options:["cool","warm","cold","dry"], ans:1, exp:"搭配 wet（潮濕的），溫暖又潮濕讓人不舒服，故選 <code>warm</code>。"},
+/* ============ Grammar Navigation ============ */
+function showGSection(id){
+    const cur=document.querySelector('.g-section.active'), nxt=document.getElementById(id); if(!nxt)return;
+    document.querySelectorAll('.nav-links a').forEach(l=>l.classList.remove('active'));
+    const link=document.querySelector(`.nav-links a[onclick="showGSection('${id}')"]`); if(link)link.classList.add('active');
+    closeMenu();
+    const reveal=()=>{nxt.classList.add('active');void nxt.offsetWidth;nxt.classList.add('visible');window.scrollTo({top:0,behavior:'smooth'});};
+    if(cur){cur.classList.remove('visible');setTimeout(()=>{cur.classList.remove('active');reveal();},220);}else{reveal();}
+}
+const sidebar=document.getElementById('sidebar'), bdrop=document.getElementById('backdrop');
+function openMenu(){sidebar.classList.add('open');bdrop.classList.add('show-bd');}
+function closeMenu(){sidebar.classList.remove('open');bdrop.classList.remove('show-bd');}
+document.getElementById('menuToggle').addEventListener('click',openMenu);
+bdrop.addEventListener('click',closeMenu);
 
-    // 10-2 天氣直述句 (6-10)
-    {skill:"10-2", q:"It ________ a lot in Keelung. People there often carry umbrellas.", zh:"基隆常下雨。那裡的人經常帶雨傘。", options:["rains","rainy","is rain","rain"], ans:0, exp:"It + 表天氣的動詞。主詞 It 是第三人稱單數，故用 <code>rains</code>。"},
-    {skill:"10-2", q:"There ________ a lot of snow in Hokkaido in winter.", zh:"北海道冬天有很多雪。", options:["has","is","are","have"], ans:1, exp:"There + be 動詞 + 天氣名詞。snow 是不可數名詞，用 <code>is</code>。"},
-    {skill:"10-2", q:"We ________ three typhoons in Taiwan last year.", zh:"台灣去年有三個颱風。", options:["are","were","have","had"], ans:3, exp:"We/They + have + 天氣名詞。last year 是過去式，故用 <code>had</code>。"},
-    {skill:"10-2", q:"The weather ________ very cold in the mountains in winter.", zh:"冬天山上的天氣很冷。", options:["does","has","is","are"], ans:2, exp:"The weather + be 動詞 + 天氣形容詞。weather 是單數，用 <code>is</code>。"},
-    {skill:"10-2", q:"It was a ________ day yesterday, so we built a snowman outside.", zh:"昨天是下雪天，所以我們在外面堆雪人。", options:["sunny","cloudy","rainy","snowy"], ans:3, exp:"堆雪人代表下雪天，且 It was + 形容詞 是天氣直述句過去式，故選 <code>snowy</code>。"},
+window.toggleAnswer=function(btn){
+    const a=btn.nextElementSibling;
+    if(a.style.display==='block'){a.style.display='none';btn.innerHTML='顯示答案';btn.style.backgroundColor='white';btn.style.color='var(--primary-color)';}
+    else{a.style.display='block';btn.innerHTML='隱藏答案';btn.style.backgroundColor='var(--primary-color)';btn.style.color='white';}
+};
 
-    // 10-3 天氣疑問句及答句 (11-15)
-    {skill:"10-3", q:"A: ________ is the weather in Taipei today?<br>B: It's cloudy and cool.", zh:"今天台北天氣如何？多雲涼爽。", options:["What","How","Where","When"], ans:1, exp:"<code>How</code> + be 動詞 + the weather 是詢問天氣的句型。"},
-    {skill:"10-3", q:"A: What's the weather ________ in Tainan in summer?<br>B: It's very hot.", zh:"台南夏天天氣怎麼樣？很熱。", options:["look","feel","be","like"], ans:3, exp:"What + be 動詞 + the weather + <code>like</code> 也可以用來詢問天氣。"},
-    {skill:"10-3", q:"A: ________ it usually rain in Hsinchu in winter?<br>B: Yes, it does.", zh:"新竹冬天通常會下雨嗎？是的。", options:["Is","Are","Does","Do"], ans:2, exp:"rain 是一般動詞，主詞 it 是第三人稱單數，助動詞用 <code>Does</code>。"},
-    {skill:"10-3", q:"A: How ________ the weather in Pingtung in summer?<br>B: It's hot and dry.", zh:"屏東夏天的天氣如何？又熱又乾。", options:["does","is","are","do"], ans:1, exp:"How + be 動詞 + the weather。weather 是單數，用 <code>is</code>。"},
-    {skill:"10-3", q:"A: Is it cold in Canada in November?<br>B: Yes, it ________. And it's also snowy.", zh:"加拿大十一月冷嗎？是的，而且還會下雪。", options:["does","is","was","isn't"], ans:1, exp:"用 be 動詞問就用 be 動詞答。Is it...? → Yes, it <code>is</code>."},
-
-    // 10-4 How long...? (16-20)
-    {skill:"10-4", q:"How long does it ________ you to walk to school every day?", zh:"你每天走路到學校要花多久時間？", options:["spend","cost","take","use"], ans:2, exp:"How long does it <code>take</code> + 人 + to + 原形動詞，是固定句型。"},
-    {skill:"10-4", q:"It ________ me two hours to finish my homework last night.", zh:"昨晚我花了兩小時完成作業。", options:["takes","took","is taking","take"], ans:1, exp:"last night 表示過去式，take 的過去式為 <code>took</code>。"},
-    {skill:"10-4", q:"A: How long will it take to drive to Taichung?<br>B: It ________ take about two hours.", zh:"開車到台中要多久？大約兩小時。", options:["is","was","did","will"], ans:3, exp:"問句用 will，答句也用 <code>will</code>。"},
-    {skill:"10-4", q:"It takes my dad about thirty minutes ________ drive to work.", zh:"我爸爸開車上班大約要三十分鐘。", options:["for","of","to","at"], ans:2, exp:"It takes + 人 + 時間 + <code>to</code> + 原形動詞。"},
-    {skill:"10-4", q:"A: How long did it take you to clean the house?<br>B: ________ about forty minutes.", zh:"你打掃房子花了多久？大約四十分鐘。", options:["It","She","For","In"], ans:2, exp:"回答「花了多久」用 <code>For</code> + 時間。"},
-
-    // 10-5 Here 倒裝句 (21-25)
-    {skill:"10-5", q:"Here ________ the train! Hurry up!", zh:"火車來了！快點！", options:["come","comes","is come","coming"], ans:1, exp:"Here + 一般動詞 + 名詞。the train 是單數，動詞用第三人稱 <code>comes</code>。"},
-    {skill:"10-5", q:"Here ________ your books and pencils.", zh:"你的書和鉛筆在這裡。", options:["is","was","are","has"], ans:2, exp:"Here + be 動詞 + 名詞。books and pencils 是複數，用 <code>are</code>。"},
-    {skill:"10-5", q:"\"Where are my glasses?\" \"Here ________ are.\"", zh:"「我的眼鏡在哪？」「在這裡。」", options:["it","they","we","there"], ans:1, exp:"glasses 是複數名詞，代名詞用 <code>they</code>。Here + 代名詞 + be 動詞。"},
-    {skill:"10-5", q:"Here ________ Tom and his sister.", zh:"Tom 和他的姐姐來了。", options:["comes","come","is","has"], ans:1, exp:"Tom and his sister 是複數主詞，一般動詞用原形 <code>come</code>。"},
-    {skill:"10-5", q:"\"Is this the museum?\" \"Yes! Here we ________.\"", zh:"「這是博物館嗎？」「是的！我們到了。」", options:["is","are","come","go"], ans:1, exp:"Here + 代名詞 + be 動詞。we 搭配 <code>are</code>。"},
-
-    // 10-6 虛主詞 it (26-30)
-    {skill:"10-6", q:"It is important ________ us to study English every day.", zh:"每天讀英文對我們很重要。", options:["of","for","to","with"], ans:1, exp:"It is + 形容詞 + <code>for</code> + 人 + to + 原形動詞。"},
-    {skill:"10-6", q:"________ is not easy to learn a new language.", zh:"學一門新語言不容易。", options:["That","This","There","It"], ans:3, exp:"虛主詞 <code>It</code> 代替後面真正的主詞 to learn a new language。"},
-    {skill:"10-6", q:"It is dangerous ________ swim in the river alone.", zh:"一個人在河裡游泳很危險。", options:["for","at","to","in"], ans:2, exp:"It is + 形容詞 + <code>to</code> + 原形動詞。此句省略 for + 人。"},
-    {skill:"10-6", q:"Is it fun ________ you to play video games?", zh:"玩電動遊戲對你來說好玩嗎？", options:["to","for","of","with"], ans:1, exp:"疑問句結構不變：Is it + 形容詞 + <code>for</code> + 人 + to...?"},
-    {skill:"10-6", q:"It is wonderful ________ a trip to Hualien.", zh:"去花蓮旅行真棒。", options:["take","to take","taking","took"], ans:1, exp:"It is + 形容詞 + <code>to + 原形動詞</code>。"}
+/* ============ Quiz Data (same as standalone quiz) ============ */
+const mcQuestions=[
+{skill:"10-1",q:"It's very ________ today. Don't forget to bring your umbrella.",zh:"今天下大雨。別忘了帶雨傘。",options:["sunny","rainy","dry","warm"],ans:1,exp:"要帶雨傘表示是下雨天，故選 <code>rainy</code>。"},
+{skill:"10-1",q:"Be careful when you drive on a ________ day. You can't see the road clearly.",zh:"多霧的日子開車要小心。",options:["sunny","windy","foggy","snowy"],ans:2,exp:"看不清楚路，故選 <code>foggy</code>。"},
+{skill:"10-1",q:"It's very ________ in summer in Kaohsiung. Let's go swimming!",zh:"高雄的夏天很熱。",options:["cold","cool","hot","foggy"],ans:2,exp:"夏天高雄很熱，故選 <code>hot</code>。"},
+{skill:"10-1",q:"Children like to play outside on ________ days.",zh:"孩子們喜歡在晴天到外面玩。",options:["rainy","foggy","cloudy","sunny"],ans:3,exp:"孩子喜歡晴天出去玩，故選 <code>sunny</code>。"},
+{skill:"10-1",q:"I don't feel comfortable on ________ and wet days.",zh:"我在溫暖又潮濕的日子覺得不舒服。",options:["cool","warm","cold","dry"],ans:1,exp:"溫暖又潮濕讓人不舒服，故選 <code>warm</code>。"},
+{skill:"10-2",q:"It ________ a lot in Keelung. People there often carry umbrellas.",zh:"基隆常下雨。",options:["rains","rainy","is rain","rain"],ans:0,exp:"It + 表天氣的動詞，第三人稱用 <code>rains</code>。"},
+{skill:"10-2",q:"There ________ a lot of snow in Hokkaido in winter.",zh:"北海道冬天有很多雪。",options:["has","is","are","have"],ans:1,exp:"There + be + 天氣名詞。snow 不可數，用 <code>is</code>。"},
+{skill:"10-2",q:"We ________ three typhoons in Taiwan last year.",zh:"台灣去年有三個颱風。",options:["are","were","have","had"],ans:3,exp:"last year 過去式，故用 <code>had</code>。"},
+{skill:"10-2",q:"The weather ________ very cold in the mountains in winter.",zh:"冬天山上的天氣很冷。",options:["does","has","is","are"],ans:2,exp:"The weather + be 動詞，weather 單數用 <code>is</code>。"},
+{skill:"10-2",q:"It was a ________ day yesterday, so we built a snowman outside.",zh:"昨天是下雪天，所以我們堆雪人。",options:["sunny","cloudy","rainy","snowy"],ans:3,exp:"堆雪人代表下雪天，故選 <code>snowy</code>。"},
+{skill:"10-3",q:"A: ________ is the weather in Taipei today?<br>B: It's cloudy and cool.",zh:"今天台北天氣如何？",options:["What","How","Where","When"],ans:1,exp:"<code>How</code> + be 動詞 + the weather 詢問天氣。"},
+{skill:"10-3",q:"A: What's the weather ________ in Tainan in summer?<br>B: It's very hot.",zh:"台南夏天天氣怎樣？",options:["look","feel","be","like"],ans:3,exp:"What + be + the weather + <code>like</code> 詢問天氣。"},
+{skill:"10-3",q:"A: ________ it usually rain in Hsinchu in winter?<br>B: Yes, it does.",zh:"新竹冬天通常會下雨嗎？",options:["Is","Are","Does","Do"],ans:2,exp:"rain 是一般動詞，it 第三人稱用 <code>Does</code>。"},
+{skill:"10-3",q:"A: How ________ the weather in Pingtung in summer?<br>B: It's hot and dry.",zh:"屏東夏天天氣如何？",options:["does","is","are","do"],ans:1,exp:"How + be 動詞，weather 單數用 <code>is</code>。"},
+{skill:"10-3",q:"A: Is it cold in Canada in November?<br>B: Yes, it ________.",zh:"加拿大十一月冷嗎？",options:["does","is","was","isn't"],ans:1,exp:"be 動詞問 be 動詞答。Is it...? → Yes, it <code>is</code>."},
+{skill:"10-4",q:"How long does it ________ you to walk to school every day?",zh:"你每天走路到學校要多久？",options:["spend","cost","take","use"],ans:2,exp:"固定句型用 <code>take</code>。"},
+{skill:"10-4",q:"It ________ me two hours to finish my homework last night.",zh:"昨晚我花了兩小時完成作業。",options:["takes","took","is taking","take"],ans:1,exp:"last night 過去式，<code>took</code>。"},
+{skill:"10-4",q:"A: How long will it take to drive to Taichung?<br>B: It ________ take about two hours.",zh:"開車到台中要多久？",options:["is","was","did","will"],ans:3,exp:"問句用 will，答句也用 <code>will</code>。"},
+{skill:"10-4",q:"It takes my dad about thirty minutes ________ drive to work.",zh:"我爸開車上班約三十分鐘。",options:["for","of","to","at"],ans:2,exp:"It takes + 人 + 時間 + <code>to</code> + V。"},
+{skill:"10-4",q:"A: How long did it take you to clean the house?<br>B: ________ about forty minutes.",zh:"你打掃花了多久？",options:["It","She","For","In"],ans:2,exp:"回答時間長度用 <code>For</code> + 時間。"},
+{skill:"10-5",q:"Here ________ the train! Hurry up!",zh:"火車來了！快點！",options:["come","comes","is come","coming"],ans:1,exp:"the train 單數，動詞用 <code>comes</code>。"},
+{skill:"10-5",q:"Here ________ your books and pencils.",zh:"你的書和鉛筆在這裡。",options:["is","was","are","has"],ans:2,exp:"books and pencils 複數，用 <code>are</code>。"},
+{skill:"10-5",q:"\"Where are my glasses?\" \"Here ________ are.\"",zh:"「我的眼鏡在哪？」",options:["it","they","we","there"],ans:1,exp:"glasses 複數，代名詞用 <code>they</code>。"},
+{skill:"10-5",q:"Here ________ Tom and his sister.",zh:"Tom 和姐姐來了。",options:["comes","come","is","has"],ans:1,exp:"複數主詞，動詞用原形 <code>come</code>。"},
+{skill:"10-5",q:"\"Is this the museum?\" \"Yes! Here we ________.\"",zh:"「這是博物館嗎？」「我們到了。」",options:["is","are","come","go"],ans:1,exp:"we 搭配 <code>are</code>。"},
+{skill:"10-6",q:"It is important ________ us to study English every day.",zh:"每天讀英文對我們很重要。",options:["of","for","to","with"],ans:1,exp:"It is + adj + <code>for</code> + 人 + to V。"},
+{skill:"10-6",q:"________ is not easy to learn a new language.",zh:"學新語言不容易。",options:["That","This","There","It"],ans:3,exp:"虛主詞 <code>It</code>。"},
+{skill:"10-6",q:"It is dangerous ________ swim in the river alone.",zh:"一個人在河裡游泳很危險。",options:["for","at","to","in"],ans:2,exp:"It is + adj + <code>to</code> + V。"},
+{skill:"10-6",q:"Is it fun ________ you to play video games?",zh:"玩電動對你好玩嗎？",options:["to","for","of","with"],ans:1,exp:"Is it + adj + <code>for</code> + 人 + to...?"},
+{skill:"10-6",q:"It is wonderful ________ a trip to Hualien.",zh:"去花蓮旅行真棒。",options:["take","to take","taking","took"],ans:1,exp:"It is + adj + <code>to + V</code>。"}
 ];
 
-// PART 2: Cloze 5 questions
-const clozePassage = `Amy is visiting Taiwan from Canada. She writes in her diary:\n\n"Today is my first day in Kaohsiung. I asked my friend, 'What's the weather {31} here in summer?' She said, 'It is very hot and sometimes wet.' She was right! The weather {32} really hot today.\n\nThis morning, it {33} me about ninety minutes to get here from Taipei by high-speed rail. When I arrived, my friend was waiting at the station. She said, 'Here {34} the famous Liuhe Night Market! Let's go there tonight.' I was so excited!\n\nI think it is wonderful {35} visit Taiwan. I want to come back again!"`;
-
-const clozeQuestions = [
-    {ref:31, options:["look","like","feel","about"], ans:1, exp:"What's the weather <code>like</code>...? 是詢問天氣的固定句型。"},
-    {ref:32, options:["has","does","is","are"], ans:2, exp:"The weather + be 動詞 + 天氣形容詞。weather 是單數，用 <code>is</code>。"},
-    {ref:33, options:["takes","taking","took","take"], ans:2, exp:"描述今天早上已發生的事，用過去式 <code>took</code>。It took + 人 + 時間 + to V。"},
-    {ref:34, options:["are","is","comes","has"], ans:1, exp:"Here + be 動詞 + 名詞。the famous Liuhe Night Market 是單數，用 <code>is</code>。"},
-    {ref:35, options:["for","to","of","with"], ans:1, exp:"It is wonderful <code>to</code> + 原形動詞。虛主詞 it 的句型。"}
+const clozePassage=`Amy is visiting Taiwan from Canada. She writes in her diary:\n\n"Today is my first day in Kaohsiung. I asked my friend, 'What's the weather {31} here in summer?' She said, 'It is very hot and sometimes wet.' She was right! The weather {32} really hot today.\n\nThis morning, it {33} me about ninety minutes to get here from Taipei by high-speed rail. When I arrived, my friend was waiting at the station. She said, 'Here {34} the famous Liuhe Night Market! Let's go there tonight.' I was so excited!\n\nI think it is wonderful {35} visit Taiwan. I want to come back again!"`;
+const clozeQuestions=[
+{ref:31,options:["look","like","feel","about"],ans:1,exp:"What's the weather <code>like</code> 是固定句型。"},
+{ref:32,options:["has","does","is","are"],ans:2,exp:"The weather + be，weather 單數用 <code>is</code>。"},
+{ref:33,options:["takes","taking","took","take"],ans:2,exp:"描述已發生的事，用過去式 <code>took</code>。"},
+{ref:34,options:["are","is","comes","has"],ans:1,exp:"單數名詞用 <code>is</code>。"},
+{ref:35,options:["for","to","of","with"],ans:1,exp:"It is wonderful <code>to</code> + V。"}
 ];
 
-// PART 3: Handwriting 5 questions
-const hwQuestions = [
-    {type:"fill", num:36, prompt:"基隆常下雨。（請將底線處的英文手寫完成）", template:"We have lots of __________ in Keelung.", hint:"填入表示「雨」的天氣名詞", answer:"rain", exp:"「雨」的名詞是 <code>rain</code>。We have lots of rain = 我們有很多雨。"},
-    {type:"fill", num:37, prompt:"春天通常在三月來到台灣。（請將底線處的英文手寫完成）", template:"Spring usually __________ in March in Taiwan.", hint:"填入動詞（第三人稱單數現在式）", answer:"comes", exp:"Spring 是第三人稱單數，動詞加 s，故為 <code>comes</code>。"},
-    {type:"compose", num:38, prompt:"請用以下提示造出完整句子：", template:"important / students / do homework / every day", hint:"使用虛主詞 It is... for... to... 句型", answer:"It is important for students to do homework every day.", exp:"虛主詞 it 句型：<code>It is important for students to do homework every day.</code>"},
-    {type:"compose", num:39, prompt:"請將以下句子改為 \"How long\" 的問句：", template:"It will take Jane two hours to finish the report.", hint:"用 How long 開頭的未來式問句", answer:"How long will it take Jane to finish the report?", exp:"將 two hours 用 How long 代替，並將 will 移到 it 前面形成問句：<code>How long will it take Jane to finish the report?</code>"},
-    {type:"compose", num:40, prompt:"請將以下中文翻譯成英文（使用 Here 倒裝句）：", template:"你的咖啡在這裡。", hint:"Here + be 動詞 + 名詞", answer:"Here is your coffee.", exp:"Here + be 動詞 + 名詞（主詞）。your coffee 是單數，故用 is：<code>Here is your coffee.</code>"}
+const hwQuestions=[
+{type:"fill",num:36,prompt:"基隆常下雨。（請手寫底線處的英文）",template:"We have lots of __________ in Keelung.",hint:"填入「雨」的天氣名詞",answer:"rain",exp:"「雨」的名詞是 <code>rain</code>。"},
+{type:"fill",num:37,prompt:"春天通常在三月來到台灣。",template:"Spring usually __________ in March in Taiwan.",hint:"填入動詞（第三人稱單數）",answer:"comes",exp:"Spring 第三人稱加 s → <code>comes</code>。"},
+{type:"compose",num:38,prompt:"請用以下提示造出完整句子：",template:"important / students / do homework / every day",hint:"使用 It is... for... to... 句型",answer:"It is important for students to do homework every day.",exp:"<code>It is important for students to do homework every day.</code>"},
+{type:"compose",num:39,prompt:"請將以下句子改為 How long 問句：",template:"It will take Jane two hours to finish the report.",hint:"用 How long 開頭",answer:"How long will it take Jane to finish the report?",exp:"<code>How long will it take Jane to finish the report?</code>"},
+{type:"compose",num:40,prompt:"請將中文翻譯成英文（Here 倒裝句）：",template:"你的咖啡在這裡。",hint:"Here + be 動詞 + 名詞",answer:"Here is your coffee.",exp:"<code>Here is your coffee.</code>"}
 ];
 
-/* ================================================================
-   Scoring Config
-   ================================================================ */
-const PTS_MC = 2, PTS_CLOZE = 4, PTS_HW = 4;
-const TOTAL_Q = 40;
-const MAX_AUTO = mcQuestions.length * PTS_MC + clozeQuestions.length * PTS_CLOZE; // 80
-const MAX_HW = hwQuestions.length * PTS_HW; // 20
-const MAX_SCORE = MAX_AUTO + MAX_HW; // 100
+/* ============ Quiz Engine (identical logic) ============ */
+const PTS_MC=2,PTS_CLOZE=4,PTS_HW=4,TOTAL_Q=40;
+const MAX_AUTO=mcQuestions.length*PTS_MC+clozeQuestions.length*PTS_CLOZE;
+let graded=false;
+const mcSel=new Array(mcQuestions.length).fill(null), clozeSel=new Array(clozeQuestions.length).fill(null);
+const canvasStrokes={}, canvasHasContent=new Array(hwQuestions.length).fill(false);
 
-let graded = false;
-const mcSel = new Array(mcQuestions.length).fill(null);
-const clozeSel = new Array(clozeQuestions.length).fill(null);
-const canvasStrokes = {}; // { 0: [[{x,y},...], ...], ... }
-const canvasHasContent = new Array(hwQuestions.length).fill(false);
+function buildMC(){document.getElementById('quizMC').innerHTML=mcQuestions.map((it,i)=>`<div class="q-card" id="mc-card-${i}"><div class="q-top"><div class="q-num">${i+1}</div><span style="font-size:.76rem;color:#8a979e;font-weight:600">${it.skill}</span><div class="q-points">${PTS_MC} 分</div></div><div class="q-text">${it.q}</div><button type="button" class="zh-toggle" onclick="toggleZh(${i})" id="mc-zhbtn-${i}">看中文提示</button><div class="zh-hint" id="mc-zh-${i}">${it.zh}</div><div class="options" id="mc-opts-${i}">${it.options.map((o,oi)=>`<div class="option" onclick="selectMC(${i},${oi})">(${String.fromCharCode(65+oi)}) ${o}<span class="mark" id="mc-mark-${i}-${oi}"></span></div>`).join('')}</div><div class="explain" id="mc-exp-${i}"></div></div>`).join('');}
+function buildCloze(){let p=clozePassage;clozeQuestions.forEach((it,i)=>{const s=`<select class="cloze-select" id="cloze-sel-${i}" onchange="onCloze(${i})"><option value="" selected disabled>(${it.ref})</option>${it.options.map((o,oi)=>`<option value="${oi}">${o}</option>`).join('')}</select>`;p=p.replace('{'+it.ref+'}',s);});document.getElementById('clozePassage').innerHTML=p.replace(/\n/g,'<br>');document.getElementById('quizCloze').innerHTML=clozeQuestions.map((it,i)=>`<div class="q-card" id="cloze-card-${i}" style="display:none"><div class="q-top"><div class="q-num">${it.ref}</div><div class="q-points">${PTS_CLOZE} 分</div></div><div class="explain" id="cloze-exp-${i}"></div></div>`).join('');}
+function buildHW(){document.getElementById('quizHW').innerHTML=hwQuestions.map((it,i)=>`<div class="hw-card" id="hw-card-${i}"><div class="q-top"><div class="q-num">${it.num}</div><span class="hw-type-badge ${it.type}">${it.type==='fill'?'翻譯填充':'依提示造句'}</span><div class="q-points">${PTS_HW} 分</div></div><div class="hw-prompt">${it.prompt}</div><div class="hw-prompt" style="margin-bottom:4px;color:var(--primary-dark)">${it.template}</div><div class="hw-prompt-zh">💡 提示：${it.hint}</div><div class="canvas-wrap" id="canvas-wrap-${i}"><canvas id="hw-canvas-${i}" height="140"></canvas></div><div class="canvas-toolbar"><button class="canvas-btn" onclick="undoStroke(${i})">↩ 復原</button><button class="canvas-btn danger" onclick="clearCanvas(${i})">✕ 清除</button></div><div class="hw-submitted-tag" id="hw-submitted-${i}">✓ 已提交，等待老師批閱</div><div class="hw-answer-reveal" id="hw-answer-${i}"></div></div>`).join('');}
+buildMC();buildCloze();buildHW();
 
-/* ================================================================
-   Build UI
-   ================================================================ */
-// MC
-function buildMC() {
-    document.getElementById('quizMC').innerHTML = mcQuestions.map((it,i) => `
-    <div class="q-card" id="mc-card-${i}">
-        <div class="q-top">
-            <div class="q-num">${i+1}</div>
-            <span style="font-size:.78rem;color:#8a979e;font-weight:600;">${it.skill}</span>
-            <div class="q-points">${PTS_MC} 分</div>
-        </div>
-        <div class="q-text">${it.q}</div>
-        <button type="button" class="zh-toggle" onclick="toggleZh(${i})" id="mc-zhbtn-${i}">看中文提示</button>
-        <div class="zh-hint" id="mc-zh-${i}">${it.zh}</div>
-        <div class="options" id="mc-opts-${i}">
-            ${it.options.map((opt,oi) => `<div class="option" onclick="selectMC(${i},${oi})">(${String.fromCharCode(65+oi)}) ${opt}<span class="mark" id="mc-mark-${i}-${oi}"></span></div>`).join('')}
-        </div>
-        <div class="explain" id="mc-exp-${i}"></div>
-    </div>`).join('');
-}
+/* Canvas Engine */
+function initCanvases(){hwQuestions.forEach((_,i)=>{const cv=document.getElementById(`hw-canvas-${i}`),wr=document.getElementById(`canvas-wrap-${i}`),ctx=cv.getContext('2d');canvasStrokes[i]=[];let drawing=false,cur=[];
+function resize(){const r=wr.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=r.width*d;cv.height=140*d;cv.style.height='140px';ctx.setTransform(d,0,0,d,0,0);redraw(i);}resize();window.addEventListener('resize',resize);
+function gp(e){const r=cv.getBoundingClientRect();return{x:(e.clientX||0)-r.left,y:(e.clientY||0)-r.top};}
+cv.addEventListener('pointerdown',e=>{if(graded)return;e.preventDefault();drawing=true;cur=[gp(e)];});
+cv.addEventListener('pointermove',e=>{if(!drawing||graded)return;e.preventDefault();const p=gp(e);cur.push(p);if(cur.length>=2){ctx.strokeStyle='#2c3e50';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(cur[cur.length-2].x,cur[cur.length-2].y);ctx.lineTo(p.x,p.y);ctx.stroke();}});
+function end(e){if(!drawing)return;e.preventDefault();drawing=false;if(cur.length>1){canvasStrokes[i].push([...cur]);canvasHasContent[i]=true;document.getElementById(`hw-card-${i}`).classList.add('answered');updateProgress();}cur=[];}
+cv.addEventListener('pointerup',end);cv.addEventListener('pointerleave',end);cv.addEventListener('pointercancel',end);
+// guide lines
+ctx.save();ctx.strokeStyle='#e8eef2';ctx.lineWidth=1;const w=cv.width/(window.devicePixelRatio||1);for(let y=35;y<140;y+=35){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}ctx.restore();
+});}
+function redraw(i){const cv=document.getElementById(`hw-canvas-${i}`),ctx=cv.getContext('2d'),w=cv.width/(window.devicePixelRatio||1);ctx.clearRect(0,0,w,140);ctx.save();ctx.strokeStyle='#e8eef2';ctx.lineWidth=1;for(let y=35;y<140;y+=35){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}ctx.restore();ctx.strokeStyle='#2c3e50';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';(canvasStrokes[i]||[]).forEach(s=>{if(s.length<2)return;ctx.beginPath();ctx.moveTo(s[0].x,s[0].y);for(let j=1;j<s.length;j++)ctx.lineTo(s[j].x,s[j].y);ctx.stroke();});}
+window.undoStroke=function(i){if(graded)return;if(canvasStrokes[i]?.length>0){canvasStrokes[i].pop();canvasHasContent[i]=canvasStrokes[i].length>0;if(!canvasHasContent[i])document.getElementById(`hw-card-${i}`).classList.remove('answered');redraw(i);updateProgress();}};
+window.clearCanvas=function(i){if(graded)return;canvasStrokes[i]=[];canvasHasContent[i]=false;document.getElementById(`hw-card-${i}`).classList.remove('answered');redraw(i);updateProgress();};
 
-// Cloze
-function buildCloze() {
-    let passage = clozePassage;
-    clozeQuestions.forEach((item,i) => {
-        const sel = `<select class="cloze-select" id="cloze-sel-${i}" onchange="onCloze(${i})" aria-label="第 ${item.ref} 格">
-            <option value="" selected disabled>(${item.ref})</option>
-            ${item.options.map((opt,oi) => `<option value="${oi}">${opt}</option>`).join('')}
-        </select>`;
-        passage = passage.replace('{'+item.ref+'}', sel);
-    });
-    document.getElementById('clozePassage').innerHTML = passage.replace(/\n/g,'<br>');
-    document.getElementById('quizCloze').innerHTML = clozeQuestions.map((item,i) => `
-    <div class="q-card cloze-result" id="cloze-card-${i}" style="display:none;">
-        <div class="q-top"><div class="q-num">${item.ref}</div><div class="q-points">${PTS_CLOZE} 分</div></div>
-        <div class="explain" id="cloze-exp-${i}"></div>
-    </div>`).join('');
-}
+window.toggleZh=function(i){const h=document.getElementById(`mc-zh-${i}`),b=document.getElementById(`mc-zhbtn-${i}`);b.textContent=h.classList.toggle('show')?'隱藏中文提示':'看中文提示';};
+window.selectMC=function(i,oi){if(graded)return;mcSel[i]=oi;document.querySelectorAll(`#mc-opts-${i} .option`).forEach(o=>o.classList.remove('selected'));document.querySelectorAll(`#mc-opts-${i} .option`)[oi].classList.add('selected');document.getElementById(`mc-card-${i}`).classList.add('answered');updateProgress();};
+window.onCloze=function(i){if(graded)return;const s=document.getElementById(`cloze-sel-${i}`);clozeSel[i]=s.value===''?null:parseInt(s.value,10);s.classList.toggle('filled',s.value!=='');updateProgress();};
 
-// Handwriting
-function buildHW() {
-    document.getElementById('quizHW').innerHTML = hwQuestions.map((it,i) => `
-    <div class="hw-card" id="hw-card-${i}">
-        <div class="q-top">
-            <div class="q-num">${it.num}</div>
-            <span class="hw-type-badge ${it.type}">${it.type==='fill'?'翻譯填充':'依提示造句'}</span>
-            <div class="q-points">${PTS_HW} 分</div>
-        </div>
-        <div class="hw-prompt">${it.prompt}</div>
-        <div class="hw-prompt" style="margin-bottom:4px;color:var(--primary-dark);">${it.template}</div>
-        <div class="hw-prompt-zh">💡 提示：${it.hint}</div>
-        <div class="canvas-wrap" id="canvas-wrap-${i}">
-            <canvas id="hw-canvas-${i}" height="140"></canvas>
-        </div>
-        <div class="canvas-toolbar">
-            <button class="canvas-btn" onclick="undoStroke(${i})">↩ 復原</button>
-            <button class="canvas-btn danger" onclick="clearCanvas(${i})">✕ 清除</button>
-        </div>
-        <div class="hw-submitted-tag" id="hw-submitted-${i}">✓ 已提交，等待老師批閱</div>
-        <div class="hw-answer-reveal" id="hw-answer-${i}"></div>
-    </div>`).join('');
-}
-
-buildMC();
-buildCloze();
-buildHW();
-
-/* ================================================================
-   Canvas Handwriting Engine
-   ================================================================ */
-function initCanvases() {
-    hwQuestions.forEach((_,i) => {
-        const canvas = document.getElementById(`hw-canvas-${i}`);
-        const wrap = document.getElementById(`canvas-wrap-${i}`);
-        const ctx = canvas.getContext('2d');
-        canvasStrokes[i] = [];
-        let drawing = false;
-        let currentStroke = [];
-
-        function resize() {
-            const rect = wrap.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = 140 * dpr;
-            canvas.style.height = '140px';
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            redraw(i);
-        }
-        resize();
-        window.addEventListener('resize', resize);
-
-        function drawGuideLines() {
-            ctx.save();
-            ctx.strokeStyle = '#e8eef2';
-            ctx.lineWidth = 1;
-            const w = canvas.width / (window.devicePixelRatio||1);
-            for (let y = 35; y < 140; y += 35) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-            }
-            ctx.restore();
-        }
-
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
-            const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
-            return {x, y};
-        }
-
-        function startDraw(e) {
-            if (graded) return;
-            e.preventDefault();
-            drawing = true;
-            currentStroke = [getPos(e)];
-        }
-        function moveDraw(e) {
-            if (!drawing || graded) return;
-            e.preventDefault();
-            const pos = getPos(e);
-            currentStroke.push(pos);
-            // Draw current stroke
-            ctx.strokeStyle = '#2c3e50';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            if (currentStroke.length >= 2) {
-                const p1 = currentStroke[currentStroke.length-2];
-                const p2 = currentStroke[currentStroke.length-1];
-                ctx.beginPath();
-                ctx.moveTo(p1.x, p1.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
-        }
-        function endDraw(e) {
-            if (!drawing) return;
-            e.preventDefault();
-            drawing = false;
-            if (currentStroke.length > 1) {
-                canvasStrokes[i].push([...currentStroke]);
-                canvasHasContent[i] = true;
-                document.getElementById(`hw-card-${i}`).classList.add('answered');
-                updateProgress();
-            }
-            currentStroke = [];
-        }
-
-        // Pointer events (unified mouse + touch)
-        canvas.addEventListener('pointerdown', startDraw);
-        canvas.addEventListener('pointermove', moveDraw);
-        canvas.addEventListener('pointerup', endDraw);
-        canvas.addEventListener('pointerleave', endDraw);
-        canvas.addEventListener('pointercancel', endDraw);
-
-        // Initial guide lines
-        drawGuideLines();
-    });
-}
-
-function redraw(i) {
-    const canvas = document.getElementById(`hw-canvas-${i}`);
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width / (window.devicePixelRatio||1);
-    ctx.clearRect(0, 0, w, 140);
-    // Guide lines
-    ctx.save();
-    ctx.strokeStyle = '#e8eef2'; ctx.lineWidth = 1;
-    for (let y = 35; y < 140; y += 35) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-    }
-    ctx.restore();
-    // Strokes
-    ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    (canvasStrokes[i]||[]).forEach(stroke => {
-        if (stroke.length < 2) return;
-        ctx.beginPath();
-        ctx.moveTo(stroke[0].x, stroke[0].y);
-        for (let j = 1; j < stroke.length; j++) ctx.lineTo(stroke[j].x, stroke[j].y);
-        ctx.stroke();
-    });
-}
-
-window.undoStroke = function(i) {
-    if (graded) return;
-    if (canvasStrokes[i] && canvasStrokes[i].length > 0) {
-        canvasStrokes[i].pop();
-        canvasHasContent[i] = canvasStrokes[i].length > 0;
-        if (!canvasHasContent[i]) document.getElementById(`hw-card-${i}`).classList.remove('answered');
-        redraw(i);
-        updateProgress();
-    }
-};
-
-window.clearCanvas = function(i) {
-    if (graded) return;
-    canvasStrokes[i] = [];
-    canvasHasContent[i] = false;
-    document.getElementById(`hw-card-${i}`).classList.remove('answered');
-    redraw(i);
-    updateProgress();
-};
-
-/* ================================================================
-   Interaction
-   ================================================================ */
-window.toggleZh = function(i) {
-    const h = document.getElementById(`mc-zh-${i}`);
-    const b = document.getElementById(`mc-zhbtn-${i}`);
-    const open = h.classList.toggle('show');
-    b.textContent = open ? '隱藏中文提示' : '看中文提示';
-};
-
-window.selectMC = function(i, oi) {
-    if (graded) return;
-    mcSel[i] = oi;
-    document.querySelectorAll(`#mc-opts-${i} .option`).forEach(o => o.classList.remove('selected'));
-    document.querySelectorAll(`#mc-opts-${i} .option`)[oi].classList.add('selected');
-    document.getElementById(`mc-card-${i}`).classList.add('answered');
-    updateProgress();
-};
-
-window.onCloze = function(i) {
-    if (graded) return;
-    const sel = document.getElementById(`cloze-sel-${i}`);
-    clozeSel[i] = sel.value === '' ? null : parseInt(sel.value, 10);
-    sel.classList.toggle('filled', sel.value !== '');
-    updateProgress();
-};
-
-const submitBtn = document.getElementById('submitBtn');
-const submitHint = document.getElementById('submitHint');
-const answeredCountEl = document.getElementById('answeredCount');
-const progressFill = document.getElementById('progressFill');
-
-function updateProgress() {
-    const mcDone = mcSel.filter(s => s !== null).length;
-    const clozeDone = clozeSel.filter(s => s !== null).length;
-    const hwDone = canvasHasContent.filter(Boolean).length;
-    const done = mcDone + clozeDone + hwDone;
-    answeredCountEl.textContent = done;
-    progressFill.style.width = (done / TOTAL_Q * 100) + '%';
-    const remain = TOTAL_Q - done;
-    if (remain === 0) {
-        submitBtn.disabled = false;
-        submitHint.textContent = '全部 40 題作答完成，可以交卷囉！';
-        submitHint.style.color = 'var(--success-color)';
-    } else {
-        submitBtn.disabled = true;
-        submitHint.textContent = `還有 ${remain} 題未作答`;
-        submitHint.style.color = '#8a979e';
-    }
-}
+const submitBtn=document.getElementById('submitBtn'),submitHint=document.getElementById('submitHint'),answeredCountEl=document.getElementById('answeredCount'),progressFill=document.getElementById('progressFill');
+function updateProgress(){const d=mcSel.filter(s=>s!==null).length+clozeSel.filter(s=>s!==null).length+canvasHasContent.filter(Boolean).length;answeredCountEl.textContent=d;progressFill.style.width=(d/TOTAL_Q*100)+'%';const r=TOTAL_Q-d;submitBtn.disabled=r>0;submitHint.textContent=r===0?'全部 40 題作答完成，可以交卷囉！':`還有 ${r} 題未作答`;submitHint.style.color=r===0?'var(--success-color)':'#8a979e';}
 updateProgress();
 
-/* ================================================================
-   Grading & Firebase Submit
-   ================================================================ */
-function expHTML(right, ansText, ansLetter, exp) {
-    const v = right ? '<div class="verdict ok">✓ 答對了</div>' : '<div class="verdict no">✗ 答錯了</div>';
-    return `${v}<div class="ans-line">正確答案：<b>(${ansLetter}) ${ansText}</b></div><div>${exp}</div>`;
-}
-
-window.gradeQuiz = async function() {
-    if (graded) return;
-    graded = true;
-    let scoreMC = 0, scoreCloze = 0, correctCount = 0;
-
-    // Grade MC
-    mcQuestions.forEach((item, i) => {
-        const card = document.getElementById(`mc-card-${i}`);
-        card.classList.add('graded');
-        const opts = document.querySelectorAll(`#mc-opts-${i} .option`);
-        const chosen = mcSel[i];
-        const right = chosen === item.ans;
-        if (right) { scoreMC += PTS_MC; correctCount++; }
-        opts.forEach((o, oi) => {
-            o.classList.remove('selected');
-            const mk = document.getElementById(`mc-mark-${i}-${oi}`);
-            if (oi === item.ans) { o.classList.add('correct'); mk.textContent = '✓'; }
-            if (oi === chosen && !right) { o.classList.add('wrong'); mk.textContent = '✗'; }
-        });
-        document.getElementById(`mc-exp-${i}`).innerHTML = expHTML(right, item.options[item.ans], String.fromCharCode(65 + item.ans), item.exp);
-    });
-
-    // Grade Cloze
-    clozeQuestions.forEach((item, i) => {
-        const sel = document.getElementById(`cloze-sel-${i}`);
-        const chosen = clozeSel[i];
-        const right = chosen === item.ans;
-        if (right) { scoreCloze += PTS_CLOZE; correctCount++; }
-        sel.classList.add(right ? 'ok' : 'bad');
-        sel.disabled = true;
-        const card = document.getElementById(`cloze-card-${i}`);
-        card.style.display = '';
-        card.classList.add('graded');
-        document.getElementById(`cloze-exp-${i}`).innerHTML = expHTML(right, item.options[item.ans], String.fromCharCode(65 + item.ans), item.exp);
-    });
-
-    // Show HW answers + lock canvases
-    hwQuestions.forEach((item, i) => {
-        document.getElementById(`hw-submitted-${i}`).classList.add('show');
-        const ansDiv = document.getElementById(`hw-answer-${i}`);
-        ansDiv.innerHTML = `<div style="background:#f7fafb;padding:12px 16px;border-radius:8px;border-left:4px solid var(--accent-color);"><b>參考答案：</b><span style="font-family:var(--font-en);">${item.answer}</span><br><span style="font-size:.9rem;">${item.exp}</span></div>`;
-        ansDiv.classList.add('show');
-    });
-
-    const autoTotal = scoreMC + scoreCloze;
-    showResult(autoTotal, correctCount, scoreMC, scoreCloze);
-
-    // Firebase submit
-    await submitToFirebase(scoreMC, scoreCloze);
-
-    submitBtn.style.display = 'none';
-    submitHint.style.display = 'none';
+function expHTML(r,t,l,e){return `${r?'<div class="verdict ok">✓ 答對了</div>':'<div class="verdict no">✗ 答錯了</div>'}<div class="ans-line">正確答案：<b>(${l}) ${t}</b></div><div>${e}</div>`;}
+window.gradeQuiz=async function(){if(graded)return;graded=true;let sM=0,sC=0,cc=0;
+mcQuestions.forEach((it,i)=>{const c=document.getElementById(`mc-card-${i}`);c.classList.add('graded');const opts=document.querySelectorAll(`#mc-opts-${i} .option`),ch=mcSel[i],r=ch===it.ans;if(r){sM+=PTS_MC;cc++;}opts.forEach((o,oi)=>{o.classList.remove('selected');const mk=document.getElementById(`mc-mark-${i}-${oi}`);if(oi===it.ans){o.classList.add('correct');mk.textContent='✓';}if(oi===ch&&!r){o.classList.add('wrong');mk.textContent='✗';}});document.getElementById(`mc-exp-${i}`).innerHTML=expHTML(r,it.options[it.ans],String.fromCharCode(65+it.ans),it.exp);});
+clozeQuestions.forEach((it,i)=>{const s=document.getElementById(`cloze-sel-${i}`),ch=clozeSel[i],r=ch===it.ans;if(r){sC+=PTS_CLOZE;cc++;}s.classList.add(r?'ok':'bad');s.disabled=true;const c=document.getElementById(`cloze-card-${i}`);c.style.display='';c.classList.add('graded');document.getElementById(`cloze-exp-${i}`).innerHTML=expHTML(r,it.options[it.ans],String.fromCharCode(65+it.ans),it.exp);});
+hwQuestions.forEach((it,i)=>{document.getElementById(`hw-submitted-${i}`).classList.add('show');const a=document.getElementById(`hw-answer-${i}`);a.innerHTML=`<div style="background:#f7fafb;padding:12px 16px;border-radius:8px;border-left:4px solid var(--accent-color)"><b>參考答案：</b><span style="font-family:var(--font-en)">${it.answer}</span><br><span style="font-size:.9rem">${it.exp}</span></div>`;a.classList.add('show');});
+const at=sM+sC,pct=Math.round(at/MAX_AUTO*100);document.getElementById('scoreBig').innerHTML=`${at}<span>/${MAX_AUTO}</span>`;document.getElementById('resultRing').style.setProperty('--pct',pct+'%');
+let g,sb;if(pct===100){g='🏆 選擇題滿分！';sb='太厲害了！';}else if(pct>=90){g='🌟 表現優異';sb='幾乎全對！';}else if(pct>=80){g='🎉 表現很好';sb='大部分掌握了。';}else if(pct>=60){g='👍 及格通過';sb='建議複習答錯的部分。';}else{g='💪 再接再厲';sb='跟著解析弄懂，下次進步。';}
+document.getElementById('gradeMsg').textContent=g;document.getElementById('subMsg').textContent=`${sb}（選擇題答對 ${cc} / ${mcQuestions.length+clozeQuestions.length} 題）`;
+document.getElementById('breakdown').innerHTML=`<div class="b-item"><b>${sM}/${mcQuestions.length*PTS_MC}</b><span class="bl">單題選擇</span></div><div class="b-item"><b>${sC}/${clozeQuestions.length*PTS_CLOZE}</b><span class="bl">克漏字</span></div><div class="b-item"><b>待批閱</b><span class="bl">手寫題</span></div>`;
+document.getElementById('resultPanel').classList.add('show');document.getElementById('resultPanel').scrollIntoView({behavior:'smooth',block:'center'});
+submitBtn.style.display='none';submitHint.style.display='none';
+// Firebase
+const fb=document.getElementById('fbStatus');
+if(!firebaseReady){fb.className='firebase-status err';fb.textContent='⚠ Firebase 未設定，無法雲端儲存。';return;}
+try{fb.className='firebase-status';fb.style.display='block';fb.style.background='#f7fafb';fb.style.color='#7a8a93';fb.textContent='⏳ 正在上傳...';
+const hw={};hwQuestions.forEach((_,i)=>{hw[`q${i+36}`]=document.getElementById(`hw-canvas-${i}`).toDataURL('image/png');});
+await db.collection('quiz_submissions').add({studentName,studentSeat:parseInt(studentSeat),unit:'B3U10',timestamp:firebase.firestore.FieldValue.serverTimestamp(),mcAnswers:mcSel.map((s,i)=>({question:i+1,selected:s,correct:mcQuestions[i].ans,isCorrect:s===mcQuestions[i].ans})),clozeAnswers:clozeSel.map((s,i)=>({question:clozeQuestions[i].ref,selected:s,correct:clozeQuestions[i].ans,isCorrect:s===clozeQuestions[i].ans})),hwImages:hw,scoreMC:sM,scoreCloze:sC,scoreAuto:at,scoreHW:null,scoreTotal:null});
+fb.className='firebase-status ok';fb.textContent='✓ 作答紀錄已上傳！';}catch(e){fb.className='firebase-status err';fb.textContent='✗ 上傳失敗：'+e.message;}
 };
-
-function showResult(autoTotal, correctCount, sMC, sCloze) {
-    const panel = document.getElementById('resultPanel');
-    const pct = Math.round(autoTotal / MAX_AUTO * 100);
-    document.getElementById('scoreBig').innerHTML = `${autoTotal}<span>/${MAX_AUTO}</span>`;
-    document.getElementById('resultRing').style.setProperty('--pct', pct + '%');
-
-    let grade, sub;
-    if (pct === 100) { grade = '🏆 選擇題滿分！'; sub = '太厲害了！等老師批閱手寫題後就是完整成績。'; }
-    else if (pct >= 90) { grade = '🌟 表現優異'; sub = '幾乎全對！看看錯題解析就更穩了。'; }
-    else if (pct >= 80) { grade = '🎉 表現很好'; sub = '大部分都掌握了，再看看解析加強。'; }
-    else if (pct >= 60) { grade = '👍 及格通過'; sub = '基礎不錯，建議複習答錯的文法點。'; }
-    else { grade = '💪 再接再厲'; sub = '跟著解析一題一題弄懂，下次一定進步。'; }
-
-    document.getElementById('gradeMsg').textContent = grade;
-    document.getElementById('subMsg').textContent = `${sub}（選擇題答對 ${correctCount} / ${mcQuestions.length + clozeQuestions.length} 題）`;
-    document.getElementById('breakdown').innerHTML = `
-        <div class="b-item"><b>${sMC} / ${mcQuestions.length*PTS_MC}</b><span class="bl">單題選擇</span></div>
-        <div class="b-item"><b>${sCloze} / ${clozeQuestions.length*PTS_CLOZE}</b><span class="bl">克漏字</span></div>
-        <div class="b-item"><b>待批閱</b><span class="bl">手寫題 (${MAX_HW}分)</span></div>`;
-    panel.classList.add('show');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-/* ================================================================
-   Firebase Submit
-   ================================================================ */
-async function submitToFirebase(scoreMC, scoreCloze) {
-    const fbStatus = document.getElementById('fbStatus');
-    if (!firebaseReady) {
-        fbStatus.className = 'firebase-status err';
-        fbStatus.textContent = '⚠ Firebase 未設定，作答結果僅顯示於本頁，無法雲端儲存。';
-        return;
-    }
-    try {
-        fbStatus.className = 'firebase-status';
-        fbStatus.style.display = 'block';
-        fbStatus.style.background = '#f7fafb';
-        fbStatus.style.color = '#7a8a93';
-        fbStatus.textContent = '⏳ 正在上傳作答紀錄...';
-
-        // Collect canvas images
-        const hwImages = {};
-        hwQuestions.forEach((_, i) => {
-            const canvas = document.getElementById(`hw-canvas-${i}`);
-            hwImages[`q${i+36}`] = canvas.toDataURL('image/png');
-        });
-
-        const submission = {
-            studentName,
-            studentSeat: parseInt(studentSeat),
-            unit: 'B3U10',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            mcAnswers: mcSel.map((sel, i) => ({
-                question: i + 1,
-                selected: sel,
-                correct: mcQuestions[i].ans,
-                isCorrect: sel === mcQuestions[i].ans
-            })),
-            clozeAnswers: clozeSel.map((sel, i) => ({
-                question: clozeQuestions[i].ref,
-                selected: sel,
-                correct: clozeQuestions[i].ans,
-                isCorrect: sel === clozeQuestions[i].ans
-            })),
-            hwImages,
-            scoreMC,
-            scoreCloze,
-            scoreAuto: scoreMC + scoreCloze,
-            scoreHW: null, // teacher grades this later
-            scoreTotal: null
-        };
-
-        await db.collection('quiz_submissions').add(submission);
-        fbStatus.className = 'firebase-status ok';
-        fbStatus.textContent = '✓ 作答紀錄已成功上傳！老師可以在後台檢視你的手寫內容。';
-    } catch(err) {
-        console.error('Firebase submit error:', err);
-        fbStatus.className = 'firebase-status err';
-        fbStatus.textContent = `✗ 上傳失敗：${err.message}。請截圖保存你的作答。`;
-    }
-}
-
-/* ================================================================
-   Reset
-   ================================================================ */
-window.resetQuiz = function() {
-    if (!confirm('確定要重新作答嗎？所有已填答案會被清除。')) return;
-    graded = false;
-    mcSel.fill(null); clozeSel.fill(null);
-    canvasHasContent.fill(false);
-    Object.keys(canvasStrokes).forEach(k => canvasStrokes[k] = []);
-    document.getElementById('resultPanel').classList.remove('show');
-    document.getElementById('fbStatus').className = 'firebase-status';
-    submitBtn.style.display = ''; submitHint.style.display = '';
-    buildMC(); buildCloze(); buildHW();
-    initCanvases();
-    updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+window.resetQuiz=function(){if(!confirm('確定重新作答？'))return;graded=false;mcSel.fill(null);clozeSel.fill(null);canvasHasContent.fill(false);Object.keys(canvasStrokes).forEach(k=>canvasStrokes[k]=[]);document.getElementById('resultPanel').classList.remove('show');document.getElementById('fbStatus').className='firebase-status';submitBtn.style.display='';submitHint.style.display='';buildMC();buildCloze();buildHW();initCanvases();updateProgress();window.scrollTo({top:0,behavior:'smooth'});};
 </script>
 </body>
 </html>
