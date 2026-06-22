@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 10 教師後台 - 學生作答檢視</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary: #3d5f73; --primary-light: #6a8fa8;
+            --accent: #e8a55d; --success: #6a9680; --error: #c27a74;
+            --bg: #f4f7f9; --card: #fff; --text: #3a4a54;
+            --font-zh: "Noto Sans TC", sans-serif; --font-en: "Inter", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--font-zh); background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        .topbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        }
+        .topbar h1 { margin: 0; font-size: 1.3rem; }
+        .topbar .count { font-family: var(--font-en); font-size: .9rem; opacity: .85; }
+        .wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+        .login-gate { text-align: center; padding: 80px 20px; }
+        .login-gate h2 { color: var(--primary); }
+        .login-gate input {
+            padding: 12px 16px; border: 2px solid #c5d6e0; border-radius: 10px;
+            font-size: 1rem; width: 260px; max-width: 90%; margin: 12px 0;
+        }
+        .login-gate input:focus { border-color: var(--primary-light); outline: none; }
+        .login-gate button {
+            display: block; margin: 12px auto; padding: 12px 40px;
+            background: var(--primary); color: #fff; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-gate .err { color: var(--error); font-size: .85rem; }
+
+        .summary-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px; margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--card); border-radius: 12px; padding: 18px; text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .stat-card .num { font-family: var(--font-en); font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .stat-card .label { font-size: .82rem; color: #7a8a93; margin-top: 4px; }
+
+        .student-list { display: flex; flex-direction: column; gap: 12px; }
+        .student-row {
+            background: var(--card); border-radius: 12px; padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer;
+            transition: transform .15s, box-shadow .15s; border: 1px solid #e8eef2;
+        }
+        .student-row:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .student-row .row-top { display: flex; justify-content: space-between; align-items: center; }
+        .student-row .name { font-weight: 700; font-size: 1.05rem; }
+        .student-row .seat { font-family: var(--font-en); color: #7a8a93; font-size: .85rem; }
+        .student-row .scores {
+            display: flex; gap: 16px; margin-top: 8px; font-family: var(--font-en); font-size: .88rem;
+        }
+        .student-row .scores span { padding: 2px 10px; border-radius: 6px; font-weight: 600; }
+        .score-mc { background: #e8f0f6; color: var(--primary); }
+        .score-cloze { background: #fdf3e5; color: #9a6d30; }
+        .score-hw { background: #eff5f1; color: var(--success); }
+        .student-row .time { font-size: .78rem; color: #aab5be; margin-top: 6px; }
+
+        /* Detail panel */
+        .detail-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.5); overflow-y: auto; padding: 40px 16px;
+        }
+        .detail-overlay.open { display: block; }
+        .detail-panel {
+            background: #fff; max-width: 780px; margin: 0 auto; border-radius: 16px;
+            padding: 32px 28px; position: relative;
+        }
+        .detail-close {
+            position: absolute; top: 16px; right: 20px;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #8a979e;
+        }
+        .detail-panel h2 { color: var(--primary); margin: 0 0 20px; }
+        .detail-section { margin-bottom: 28px; }
+        .detail-section h3 {
+            font-size: 1rem; color: var(--primary); border-bottom: 2px solid #e8eef2;
+            padding-bottom: 8px; margin-bottom: 14px;
+        }
+        .hw-gallery { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .hw-item { border: 1px solid #e8eef2; border-radius: 10px; padding: 14px; }
+        .hw-item .hw-label { font-size: .88rem; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
+        .hw-item img { width: 100%; border-radius: 6px; border: 1px solid #eee; }
+        .hw-item .ref-answer { font-size: .85rem; color: #7a8a93; margin-top: 6px; font-family: var(--font-en); }
+        .hw-grade-input {
+            margin-top: 8px; display: flex; gap: 8px; align-items: center;
+        }
+        .hw-grade-input label { font-size: .85rem; font-weight: 600; }
+        .hw-grade-input input {
+            width: 60px; padding: 4px 8px; border: 2px solid #c5d6e0; border-radius: 6px;
+            font-family: var(--font-en); font-size: .95rem; text-align: center;
+        }
+        .save-grades-btn {
+            margin-top: 16px; padding: 10px 28px; background: var(--success); color: #fff;
+            border: none; border-radius: 8px; font-weight: 700; cursor: pointer;
+        }
+        .mc-detail-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 6px;
+        }
+        .mc-cell {
+            font-family: var(--font-en); font-size: .82rem; padding: 6px;
+            border-radius: 6px; text-align: center; font-weight: 600;
+        }
+        .mc-cell.right { background: #eff5f1; color: var(--success); }
+        .mc-cell.wrong { background: #fdf6f5; color: var(--error); }
+        .no-data { text-align: center; padding: 60px; color: #aab5be; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1>📋 Unit 10 教師後台</h1>
+    <div class="count" id="topCount"></div>
+</div>
+
+<div class="wrap">
+    <!-- Login Gate -->
+    <div class="login-gate" id="teacherLogin">
+        <h2>🔐 教師登入</h2>
+        <p>請輸入教師密碼以檢視學生作答紀錄</p>
+        <input type="password" id="teacherPwd" placeholder="輸入密碼" onkeydown="if(event.key==='Enter')teacherAuth()">
+        <button onclick="teacherAuth()">登入</button>
+        <div class="err" id="teacherErr"></div>
+    </div>
+
+    <!-- Dashboard (hidden until login) -->
+    <div id="dashboard" style="display:none;">
+        <div class="summary-bar" id="summaryBar"></div>
+        <div class="student-list" id="studentList"></div>
+    </div>
+</div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay">
+    <div class="detail-panel" id="detailPanel">
+        <button class="detail-close" onclick="closeDetail()">✕</button>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<script>
+/* ================================================================
+   Firebase Config – 與學生端相同的設定
+   ================================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCoK3uaGyyG_7VXAysv2-zxfmqLly7N8rw",
+  authDomain: "english-homework-mintse.firebaseapp.com",
+  projectId: "english-homework-mintse",
+  storageBucket: "english-homework-mintse.firebasestorage.app",
+  messagingSenderId: "1065925021054",
+  appId: "1:1065925021054:web:5f58164f72a9e6aff0f72f"
+};
+
+/* ================================================================
+   教師密碼 – 請自行更換（注意：這是前端驗證，僅防止學生誤入）
+   ================================================================ */
+const TEACHER_PASSWORD = "elleryfc8";
+
+let db = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+} catch(e) { console.warn("Firebase init error:", e); }
+
+const hwAnswers = {
+    q36: "rain", q37: "comes",
+    q38: "It is important for students to do homework every day.",
+    q39: "How long will it take Jane to finish the report?",
+    q40: "Here is your coffee."
+};
+
+let submissions = [];
+
+function teacherAuth() {
+    const pwd = document.getElementById('teacherPwd').value;
+    if (pwd === TEACHER_PASSWORD) {
+        document.getElementById('teacherLogin').style.display = 'none';
+        document.getElementById('dashboard').style.display = '';
+        loadSubmissions();
+    } else {
+        document.getElementById('teacherErr').textContent = '密碼錯誤';
+    }
+}
+
+async function loadSubmissions() {
+    if (!db || firebaseConfig.apiKey === "YOUR_API_KEY") {
+        document.getElementById('studentList').innerHTML = '<div class="no-data">Firebase 尚未設定。請先完成 Firebase 專案設定。</div>';
+        return;
+    }
+    try {
+        const snap = await db.collection('quiz_submissions')
+            .where('unit', '==', 'B3U10')
+            .orderBy('timestamp', 'desc')
+            .get();
+        submissions = [];
+        snap.forEach(doc => submissions.push({ id: doc.id, ...doc.data() }));
+        renderDashboard();
+    } catch(err) {
+        console.error(err);
+        document.getElementById('studentList').innerHTML = `<div class="no-data">載入失敗：${err.message}<br>若為索引錯誤，請點擊 Firebase Console 連結建立索引。</div>`;
+    }
+}
+
+function renderDashboard() {
+    const list = document.getElementById('studentList');
+    const bar = document.getElementById('summaryBar');
+    document.getElementById('topCount').textContent = `共 ${submissions.length} 份作答`;
+
+    if (submissions.length === 0) {
+        list.innerHTML = '<div class="no-data">目前還沒有學生提交作答。</div>';
+        bar.innerHTML = '';
+        return;
+    }
+
+    const avgAuto = submissions.reduce((s, d) => s + (d.scoreAuto || 0), 0) / submissions.length;
+    const graded = submissions.filter(d => d.scoreHW !== null && d.scoreHW !== undefined);
+    const avgTotal = graded.length > 0 ? graded.reduce((s, d) => s + (d.scoreTotal || 0), 0) / graded.length : null;
+
+    bar.innerHTML = `
+        <div class="stat-card"><div class="num">${submissions.length}</div><div class="label">繳交人數</div></div>
+        <div class="stat-card"><div class="num">${avgAuto.toFixed(1)}</div><div class="label">選擇題平均 (/80)</div></div>
+        <div class="stat-card"><div class="num">${graded.length}</div><div class="label">已批閱手寫</div></div>
+        <div class="stat-card"><div class="num">${avgTotal !== null ? avgTotal.toFixed(1) : '—'}</div><div class="label">總分平均 (/100)</div></div>`;
+
+    list.innerHTML = submissions.map((d, i) => {
+        const ts = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('zh-TW') : '—';
+        const hwStatus = d.scoreHW !== null && d.scoreHW !== undefined ? `${d.scoreHW}/20` : '待批閱';
+        return `
+        <div class="student-row" onclick="openDetail(${i})">
+            <div class="row-top">
+                <span class="name">${d.studentName}</span>
+                <span class="seat">座號 ${d.studentSeat}</span>
+            </div>
+            <div class="scores">
+                <span class="score-mc">選擇 ${d.scoreMC || 0}/60</span>
+                <span class="score-cloze">克漏 ${d.scoreCloze || 0}/20</span>
+                <span class="score-hw">手寫 ${hwStatus}</span>
+            </div>
+            <div class="time">${ts}</div>
+        </div>`;
+    }).join('');
+}
+
+function openDetail(idx) {
+    const d = submissions[idx];
+    const overlay = document.getElementById('detailOverlay');
+    const content = document.getElementById('detailContent');
+    const ts = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('zh-TW') : '—';
+
+    // MC detail
+    let mcHTML = '<div class="mc-detail-grid">';
+    (d.mcAnswers || []).forEach(a => {
+        const cls = a.isCorrect ? 'right' : 'wrong';
+        const letter = String.fromCharCode(65 + a.selected);
+        const correct = String.fromCharCode(65 + a.correct);
+        mcHTML += `<div class="mc-cell ${cls}">Q${a.question}: ${letter}${a.isCorrect ? '' : ' →'+correct}</div>`;
+    });
+    mcHTML += '</div>';
+
+    // Cloze detail
+    let clozeHTML = '<div class="mc-detail-grid">';
+    (d.clozeAnswers || []).forEach(a => {
+        const cls = a.isCorrect ? 'right' : 'wrong';
+        const letter = String.fromCharCode(65 + a.selected);
+        const correct = String.fromCharCode(65 + a.correct);
+        clozeHTML += `<div class="mc-cell ${cls}">Q${a.question}: ${letter}${a.isCorrect ? '' : ' →'+correct}</div>`;
+    });
+    clozeHTML += '</div>';
+
+    // HW images
+    let hwHTML = '<div class="hw-gallery">';
+    for (let q = 36; q <= 40; q++) {
+        const key = `q${q}`;
+        const imgSrc = d.hwImages ? d.hwImages[key] : null;
+        hwHTML += `<div class="hw-item">
+            <div class="hw-label">Q${q}</div>
+            ${imgSrc ? `<img src="${imgSrc}" alt="Q${q} handwriting">` : '<div style="color:#aab5be;padding:20px;">無圖片</div>'}
+            <div class="ref-answer">參考答案：${hwAnswers[key] || ''}</div>
+            <div class="hw-grade-input">
+                <label>給分 (0-${4})：</label>
+                <input type="number" min="0" max="4" id="grade-${idx}-${q}" value="${d[`hwScore_q${q}`] ?? ''}">
+            </div>
+        </div>`;
+    }
+    hwHTML += `</div><button class="save-grades-btn" onclick="saveGrades('${d.id}', ${idx})">💾 儲存手寫分數</button>`;
+
+    content.innerHTML = `
+        <h2>${d.studentName}（座號 ${d.studentSeat}）</h2>
+        <div style="font-size:.85rem;color:#7a8a93;margin-bottom:20px;">提交時間：${ts}</div>
+        <div class="detail-section">
+            <h3>📊 選擇題 (${d.scoreMC || 0}/60)</h3>
+            ${mcHTML}
+        </div>
+        <div class="detail-section">
+            <h3>📊 克漏字 (${d.scoreCloze || 0}/20)</h3>
+            ${clozeHTML}
+        </div>
+        <div class="detail-section">
+            <h3>✍️ 手寫題批閱</h3>
+            ${hwHTML}
+        </div>`;
+    overlay.classList.add('open');
+}
+
+function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('open');
+}
+document.getElementById('detailOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+});
+
+async function saveGrades(docId, idx) {
+    let totalHW = 0;
+    const updates = {};
+    for (let q = 36; q <= 40; q++) {
+        const input = document.getElementById(`grade-${idx}-${q}`);
+        const val = parseInt(input.value);
+        if (isNaN(val) || val < 0 || val > 4) {
+            alert(`Q${q} 的分數無效，請填 0-4`);
+            return;
+        }
+        updates[`hwScore_q${q}`] = val;
+        totalHW += val;
+    }
+    updates.scoreHW = totalHW;
+    updates.scoreTotal = (submissions[idx].scoreAuto || 0) + totalHW;
+
+    try {
+        await db.collection('quiz_submissions').doc(docId).update(updates);
+        submissions[idx] = { ...submissions[idx], ...updates };
+        renderDashboard();
+        alert(`✓ 已儲存！手寫分數 ${totalHW}/20，總分 ${updates.scoreTotal}/100`);
+        closeDetail();
+    } catch(err) {
+        alert('儲存失敗：' + err.message);
+    }
+}
+</script>
+</body>
+</html>

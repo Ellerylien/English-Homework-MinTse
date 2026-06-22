@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>國中英語文法通 3 - Unit 10 綜合測驗</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a8fa8;
+            --primary-light: #c5d6e0;
+            --primary-dark: #3d5f73;
+            --secondary-color: #eef3f6;
+            --text-color: #4a4a4a;
+            --accent-color: #e8a55d;
+            --success-color: #6a9680;
+            --error-color: #c27a74;
+            --border-radius: 12px;
+            --shadow-tint: rgba(106, 143, 168, 0.16);
+            --font-zh: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            --font-en: "Inter", "Noto Sans TC", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+        }
+        body {
+            font-family: var(--font-zh);
+            margin: 0; padding: 0;
+            background-color: #f7f9fb;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        /* ===== Login Overlay ===== */
+        .login-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #3d5f73 0%, #6a8fa8 50%, #8db4cc 100%);
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .login-card {
+            background: #fff; border-radius: 20px; padding: 48px 40px;
+            max-width: 420px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .login-card h1 {
+            font-size: 1.6rem; color: var(--primary-dark);
+            margin: 0 0 6px; border: none; padding: 0;
+        }
+        .login-card .subtitle {
+            color: #8a9aa6; font-size: 0.95rem; margin-bottom: 32px;
+        }
+        .login-card label {
+            display: block; text-align: left;
+            font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);
+            margin-bottom: 6px; margin-top: 18px;
+        }
+        .login-card input[type="text"], .login-card input[type="number"] {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--primary-light);
+            border-radius: 10px; font-size: 1rem; font-family: var(--font-zh);
+            transition: border-color 0.2s; outline: none;
+        }
+        .login-card input:focus { border-color: var(--primary-color); }
+        .login-card .login-btn {
+            margin-top: 28px; width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff; border: none; border-radius: 12px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .login-card .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--shadow-tint); }
+        .login-card .login-btn:active { transform: scale(0.97); }
+        .login-card .login-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .login-error { color: var(--error-color); font-size: 0.85rem; margin-top: 8px; min-height: 1.2em; }
+
+        /* ===== Main Layout ===== */
+        .main-wrap {
+            max-width: 860px; margin: 0 auto; padding: 24px 20px 60px;
+        }
+        .quiz-header {
+            text-align: center; margin-bottom: 12px;
+        }
+        .quiz-header h1 {
+            font-size: 1.7rem; color: var(--primary-dark); margin: 0 0 4px;
+        }
+        .quiz-header .desc {
+            color: #7a8a93; font-size: 0.92rem; max-width: 600px; margin: 0 auto 8px;
+        }
+        .student-tag {
+            display: inline-block; background: var(--secondary-color);
+            color: var(--primary-dark); font-weight: 600;
+            padding: 4px 16px; border-radius: 20px; font-size: 0.88rem;
+            margin-bottom: 20px;
+        }
+
+        /* ===== Progress ===== */
+        .progress-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(247,249,251,.92); backdrop-filter: blur(8px);
+            padding: 14px 20px; margin: 0 -20px 28px;
+            border-bottom: 1px solid #dde5eb;
+        }
+        .progress-head {
+            display: flex; justify-content: space-between; align-items: baseline;
+            max-width: 840px; margin: 0 auto 8px;
+            font-weight: 700; color: var(--primary-dark);
+        }
+        .progress-head .count { font-family: var(--font-en); }
+        .progress-head .count b { font-size: 1.2rem; }
+        .progress-track {
+            max-width: 840px; margin: 0 auto; height: 9px;
+            background: #dde5eb; border-radius: 999px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+            transition: width .45s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* ===== Part Header ===== */
+        .part-head {
+            margin: 42px 0 22px; padding: 18px 22px;
+            background: linear-gradient(90deg, var(--secondary-color), transparent);
+            border-left: 6px solid var(--accent-color); border-radius: 8px;
+        }
+        .part-head h2 { margin: 0; font-size: 1.3rem; color: var(--primary-dark); }
+        .part-head .meta { font-size: .88rem; color: #7a8a93; margin-top: 4px; font-family: var(--font-en); }
+
+        /* ===== Question Card ===== */
+        .q-card {
+            background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius);
+            padding: 24px 26px; margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.02);
+            transition: border-color .25s ease; scroll-margin-top: 90px;
+        }
+        .q-card.answered { border-color: var(--primary-light); }
+        .q-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+        .q-num {
+            background: var(--primary-color); color: #fff;
+            width: 34px; height: 34px; flex: 0 0 34px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-en); font-weight: 700; font-size: .95rem;
+        }
+        .q-points { font-size: .78rem; color: var(--accent-color); font-weight: 700; font-family: var(--font-en); margin-left: auto; }
+        .q-text {
+            font-family: var(--font-en); font-size: 1.1rem; line-height: 1.85;
+            color: #2c3e50; font-weight: 600; margin-bottom: 16px;
+        }
+        .zh-toggle {
+            display: inline-block; margin-top: 6px;
+            font-family: var(--font-zh); font-size: .85rem; font-weight: 600;
+            color: var(--primary-color); background: none; border: none; padding: 0; cursor: pointer;
+            border-bottom: 1px dashed var(--primary-light); transition: color .2s;
+        }
+        .zh-toggle:hover { color: var(--primary-dark); }
+        .zh-hint {
+            display: none; font-family: var(--font-zh); font-weight: 500;
+            color: #7a8a93; font-size: .93rem; margin-top: 8px;
+            padding: 8px 12px; background: var(--secondary-color);
+            border-radius: 8px; border-left: 3px solid var(--primary-light);
+        }
+        .zh-hint.show { display: block; }
+
+        /* MC Options */
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media(max-width:560px){ .options { grid-template-columns: 1fr; } }
+        .option {
+            font-family: var(--font-en); background: #fafafa; border: 2px solid #ececec;
+            padding: 13px 16px; border-radius: 10px; cursor: pointer;
+            font-size: 1.02rem; transition: background .18s, border-color .18s, transform .12s; user-select: none;
+        }
+        .option:hover { background: var(--secondary-color); border-color: var(--primary-light); transform: translateY(-2px); }
+        .option.selected { background: #dfe9f0; border-color: var(--primary-color); color: var(--primary-dark); font-weight: 600; }
+        .graded .option { cursor: default; pointer-events: none; }
+        .graded .option.correct { background: #eff5f1; border-color: var(--success-color); color: #3b5341; font-weight: 600; }
+        .graded .option.wrong { background: #fdf6f5; border-color: var(--error-color); color: #8c423b; }
+        .option .mark { float: right; font-weight: 700; }
+
+        /* Cloze */
+        .cloze-passage {
+            background: #fff; padding: 28px; border-radius: 10px;
+            border-left: 5px solid var(--accent-color); line-height: 2.1;
+            font-size: 1.1rem; font-family: var(--font-en);
+            margin-bottom: 28px; box-shadow: 0 2px 12px var(--shadow-tint);
+        }
+        .cloze-select {
+            font-family: var(--font-en); font-size: .95rem; font-weight: 600;
+            padding: 4px 8px; border: 2px solid var(--primary-light); border-radius: 6px;
+            background: #f7fafb; color: var(--primary-dark); cursor: pointer;
+            transition: border-color .2s;
+        }
+        .cloze-select:focus { border-color: var(--primary-color); outline: none; }
+        .cloze-select.filled { border-color: var(--primary-color); background: #e8f0f6; }
+        .cloze-select.ok { border-color: var(--success-color); background: #eff5f1; }
+        .cloze-select.bad { border-color: var(--error-color); background: #fdf6f5; }
+        .cloze-result { display: none; }
+
+        /* Explain block */
+        .explain { margin-top: 14px; font-size: .95rem; line-height: 1.7; }
+        .verdict { font-weight: 700; margin-bottom: 6px; padding: 8px 12px; border-radius: 8px; }
+        .verdict.ok { background: #eff5f1; color: #3b5341; }
+        .verdict.no { background: #fdf6f5; color: #8c423b; }
+        .ans-line { margin: 6px 0; font-family: var(--font-en); }
+
+        /* ===== Canvas Handwriting ===== */
+        .hw-card {
+            background: #fff; border: 1px solid #e6e6e6; border-radius: var(--border-radius);
+            padding: 24px 26px; margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.02); scroll-margin-top: 90px;
+            transition: border-color .25s;
+        }
+        .hw-card.answered { border-color: var(--primary-light); }
+        .hw-prompt {
+            font-family: var(--font-en); font-size: 1.05rem; line-height: 1.8;
+            color: #2c3e50; font-weight: 600; margin-bottom: 6px;
+        }
+        .hw-prompt-zh {
+            font-family: var(--font-zh); font-size: .93rem; color: #7a8a93;
+            margin-bottom: 12px;
+        }
+        .hw-type-badge {
+            display: inline-block; font-size: .78rem; font-weight: 700;
+            padding: 2px 10px; border-radius: 12px; margin-bottom: 10px;
+        }
+        .hw-type-badge.fill { background: #e8f0f6; color: var(--primary-dark); }
+        .hw-type-badge.compose { background: #fdf3e5; color: #9a6d30; }
+        .canvas-wrap {
+            position: relative; border: 2px solid var(--primary-light);
+            border-radius: 10px; overflow: hidden; background: #fff;
+            touch-action: none;
+        }
+        .canvas-wrap canvas {
+            display: block; width: 100%;
+            cursor: crosshair;
+        }
+        .canvas-toolbar {
+            display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+        }
+        .canvas-btn {
+            font-family: var(--font-zh); font-size: .85rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 8px; border: 1.5px solid var(--primary-light);
+            background: #fff; color: var(--primary-dark); cursor: pointer;
+            transition: background .15s, border-color .15s;
+        }
+        .canvas-btn:hover { background: var(--secondary-color); border-color: var(--primary-color); }
+        .canvas-btn.danger { border-color: #e0b8b5; color: var(--error-color); }
+        .canvas-btn.danger:hover { background: #fdf6f5; }
+        .hw-answer-reveal {
+            margin-top: 12px; padding: 12px 16px; border-radius: 8px;
+            font-size: .95rem; line-height: 1.7; display: none;
+        }
+        .hw-answer-reveal.show { display: block; }
+        .hw-submitted-tag {
+            display: none; margin-top: 10px; font-size: .88rem; font-weight: 600;
+            color: var(--success-color); padding: 6px 14px;
+            background: #eff5f1; border-radius: 8px;
+        }
+        .hw-submitted-tag.show { display: inline-block; }
+
+        /* ===== Action Zone ===== */
+        .action-zone { text-align: center; margin: 40px 0 30px; }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff; border: none; padding: 16px 48px;
+            border-radius: 14px; font-size: 1.15rem; font-weight: 700;
+            cursor: pointer; transition: transform .15s, box-shadow .2s;
+        }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px var(--shadow-tint); }
+        .submit-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+        .submit-hint { margin-top: 10px; font-size: .88rem; color: #8a979e; font-weight: 600; }
+        .firebase-status {
+            margin-top: 12px; font-size: .85rem; font-weight: 600;
+            padding: 8px 16px; border-radius: 8px; display: none;
+        }
+        .firebase-status.ok { display: block; background: #eff5f1; color: #3b5341; }
+        .firebase-status.err { display: block; background: #fdf6f5; color: #8c423b; }
+
+        /* ===== Result ===== */
+        .result {
+            background: #fff; border-radius: 16px; padding: 40px 30px;
+            text-align: center; box-shadow: 0 8px 40px var(--shadow-tint);
+            border: 2px solid var(--primary-light);
+            margin: 30px 0; display: none;
+        }
+        .result.show { display: block; }
+        .result-ring {
+            width: 140px; height: 140px; margin: 0 auto 20px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(var(--primary-color) var(--pct, 0%), #e3e9ed var(--pct, 0%));
+        }
+        .result-ring .inner {
+            width: 112px; height: 112px; border-radius: 50%;
+            background: #fff; display: flex; align-items: center; justify-content: center;
+        }
+        .score-big { font-family: var(--font-en); font-size: 2.2rem; font-weight: 700; color: var(--primary-dark); }
+        .score-big span { font-size: 1rem; color: #8a979e; }
+        .grade-msg { font-size: 1.3rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
+        .sub-msg { font-size: .92rem; color: #7a8a93; margin-bottom: 20px; }
+        .breakdown { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        .b-item { text-align: center; }
+        .b-item b { display: block; font-family: var(--font-en); font-size: 1.2rem; color: var(--primary-dark); }
+        .b-item .bl { font-size: .82rem; color: #8a979e; }
+        .retry-btn {
+            margin-top: 24px; padding: 12px 36px;
+            background: var(--accent-color); color: #fff; border: none;
+            border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .foot { text-align: center; margin-top: 40px; font-size: .8rem; color: #aab5be; }
+
+        /* ===== Animations ===== */
+        @keyframes ex-pop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
+        @keyframes ex-shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+        <h1>📝 Unit 10 綜合測驗</h1>
+        <div class="subtitle">國中英語文法通 3 · 天氣 / How long / Here 倒裝 / 虛主詞 it</div>
+        <label for="loginName">姓名</label>
+        <input type="text" id="loginName" placeholder="請輸入你的姓名" autocomplete="off">
+        <label for="loginSeat">座號</label>
+        <input type="number" id="loginSeat" placeholder="請輸入座號" min="1" max="99" autocomplete="off">
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">開始測驗</button>
+        <div class="login-error" id="loginError"></div>
+    </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap" id="mainWrap" style="display:none;">
+    <div class="quiz-header">
+        <h1>📝 Unit 10 綜合測驗</h1>
+        <div class="desc">共 40 題，滿分 100 分。選擇題自動批改，手寫題由老師批閱。全部作答完成後按交卷。</div>
+        <div class="student-tag" id="studentTag"></div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-head">
+            <span>作答進度</span>
+            <span class="count"><b id="answeredCount">0</b> / 40 題</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="result" id="resultPanel">
+        <div class="result-ring" id="resultRing"><div class="inner"><div class="score-big" id="scoreBig">0<span>/100</span></div></div></div>
+        <div class="grade-msg" id="gradeMsg"></div>
+        <div class="sub-msg" id="subMsg"></div>
+        <div class="breakdown" id="breakdown"></div>
+        <button class="retry-btn" onclick="resetQuiz()">重新作答</button>
+    </div>
+
+    <!-- Part 1: MC -->
+    <div class="part-head">
+        <h2>第一部分 單題選擇</h2>
+        <div class="meta">Questions 1–30 · 每題 2 分 · 共 60 分</div>
+    </div>
+    <div id="quizMC"></div>
+
+    <!-- Part 2: Cloze -->
+    <div class="part-head">
+        <h2>第二部分 克漏字選擇</h2>
+        <div class="meta">Questions 31–35 · 每題 4 分 · 共 20 分 · 請在短文空格的下拉選單中選擇答案</div>
+    </div>
+    <div class="cloze-passage" id="clozePassage"></div>
+    <div id="quizCloze"></div>
+
+    <!-- Part 3: Handwriting -->
+    <div class="part-head">
+        <h2>第三部分 手寫題</h2>
+        <div class="meta">Questions 36–40 · 每題 4 分 · 共 20 分 · 請在書寫區域內手寫作答</div>
+    </div>
+    <div id="quizHW"></div>
+
+    <div class="action-zone">
+        <button class="submit-btn" id="submitBtn" disabled onclick="gradeQuiz()">交卷看解析</button>
+        <div class="submit-hint" id="submitHint">還有 40 題未作答</div>
+        <div class="firebase-status" id="fbStatus"></div>
+    </div>
+    <div class="foot">資料來源：國中英語文法通 3 (Unit 10) · 互動練習 · 滿分 100 分</div>
+</div>
+
+<script>
+/* ================================================================
+   Firebase Config – 請替換為你自己的 Firebase 專案設定
+   ================================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCoK3uaGyyG_7VXAysv2-zxfmqLly7N8rw",
+  authDomain: "english-homework-mintse.firebaseapp.com",
+  projectId: "english-homework-mintse",
+  storageBucket: "english-homework-mintse.firebasestorage.app",
+  messagingSenderId: "1065925021054",
+  appId: "1:1065925021054:web:5f58164f72a9e6aff0f72f"
+};
+
+let db = null;
+let firebaseReady = false;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    if (firebaseConfig.apiKey !== "YOUR_API_KEY") firebaseReady = true;
+} catch(e) { console.warn("Firebase init skipped:", e); }
+
+/* ================================================================
+   Login
+   ================================================================ */
+let studentName = '', studentSeat = '';
+function doLogin() {
+    const name = document.getElementById('loginName').value.trim();
+    const seat = document.getElementById('loginSeat').value.trim();
+    const errEl = document.getElementById('loginError');
+    if (!name) { errEl.textContent = '請輸入姓名'; return; }
+    if (!seat || isNaN(seat) || +seat < 1) { errEl.textContent = '請輸入有效座號'; return; }
+    studentName = name;
+    studentSeat = seat;
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('mainWrap').style.display = '';
+    document.getElementById('studentTag').textContent = `${studentName}（座號 ${studentSeat}）`;
+    initCanvases();
+}
+
+/* ================================================================
+   Question Data
+   ================================================================ */
+// PART 1: MC 30 questions
+const mcQuestions = [
+    // 10-1 天氣形容詞 (1-5)
+    {skill:"10-1", q:"It's very ________ today. Don't forget to bring your umbrella.", zh:"今天下大雨。別忘了帶雨傘。", options:["sunny","rainy","dry","warm"], ans:1, exp:"要帶雨傘表示是下雨天，故選 <code>rainy</code>（下雨的）。"},
+    {skill:"10-1", q:"Be careful when you drive on a ________ day. You can't see the road clearly.", zh:"多霧的日子開車要小心。你看不清楚路。", options:["sunny","windy","foggy","snowy"], ans:2, exp:"看不清楚路，表示霧很大，故選 <code>foggy</code>（多霧的）。"},
+    {skill:"10-1", q:"It's very ________ in summer in Kaohsiung. Let's go swimming!", zh:"高雄的夏天很熱。我們去游泳吧！", options:["cold","cool","hot","foggy"], ans:2, exp:"夏天高雄很熱，適合游泳，故選 <code>hot</code>（炎熱的）。"},
+    {skill:"10-1", q:"Children like to play outside on ________ days.", zh:"孩子們喜歡在晴天到外面玩。", options:["rainy","foggy","cloudy","sunny"], ans:3, exp:"孩子喜歡在天氣好的日子出去玩，故選 <code>sunny</code>（晴朗的）。"},
+    {skill:"10-1", q:"I don't feel comfortable on ________ and wet days.", zh:"我在溫暖又潮濕的日子覺得不舒服。", options:["cool","warm","cold","dry"], ans:1, exp:"搭配 wet（潮濕的），溫暖又潮濕讓人不舒服，故選 <code>warm</code>。"},
+
+    // 10-2 天氣直述句 (6-10)
+    {skill:"10-2", q:"It ________ a lot in Keelung. People there often carry umbrellas.", zh:"基隆常下雨。那裡的人經常帶雨傘。", options:["rains","rainy","is rain","rain"], ans:0, exp:"It + 表天氣的動詞。主詞 It 是第三人稱單數，故用 <code>rains</code>。"},
+    {skill:"10-2", q:"There ________ a lot of snow in Hokkaido in winter.", zh:"北海道冬天有很多雪。", options:["has","is","are","have"], ans:1, exp:"There + be 動詞 + 天氣名詞。snow 是不可數名詞，用 <code>is</code>。"},
+    {skill:"10-2", q:"We ________ three typhoons in Taiwan last year.", zh:"台灣去年有三個颱風。", options:["are","were","have","had"], ans:3, exp:"We/They + have + 天氣名詞。last year 是過去式，故用 <code>had</code>。"},
+    {skill:"10-2", q:"The weather ________ very cold in the mountains in winter.", zh:"冬天山上的天氣很冷。", options:["does","has","is","are"], ans:2, exp:"The weather + be 動詞 + 天氣形容詞。weather 是單數，用 <code>is</code>。"},
+    {skill:"10-2", q:"It was a ________ day yesterday, so we built a snowman outside.", zh:"昨天是下雪天，所以我們在外面堆雪人。", options:["sunny","cloudy","rainy","snowy"], ans:3, exp:"堆雪人代表下雪天，且 It was + 形容詞 是天氣直述句過去式，故選 <code>snowy</code>。"},
+
+    // 10-3 天氣疑問句及答句 (11-15)
+    {skill:"10-3", q:"A: ________ is the weather in Taipei today?<br>B: It's cloudy and cool.", zh:"今天台北天氣如何？多雲涼爽。", options:["What","How","Where","When"], ans:1, exp:"<code>How</code> + be 動詞 + the weather 是詢問天氣的句型。"},
+    {skill:"10-3", q:"A: What's the weather ________ in Tainan in summer?<br>B: It's very hot.", zh:"台南夏天天氣怎麼樣？很熱。", options:["look","feel","be","like"], ans:3, exp:"What + be 動詞 + the weather + <code>like</code> 也可以用來詢問天氣。"},
+    {skill:"10-3", q:"A: ________ it usually rain in Hsinchu in winter?<br>B: Yes, it does.", zh:"新竹冬天通常會下雨嗎？是的。", options:["Is","Are","Does","Do"], ans:2, exp:"rain 是一般動詞，主詞 it 是第三人稱單數，助動詞用 <code>Does</code>。"},
+    {skill:"10-3", q:"A: How ________ the weather in Pingtung in summer?<br>B: It's hot and dry.", zh:"屏東夏天的天氣如何？又熱又乾。", options:["does","is","are","do"], ans:1, exp:"How + be 動詞 + the weather。weather 是單數，用 <code>is</code>。"},
+    {skill:"10-3", q:"A: Is it cold in Canada in November?<br>B: Yes, it ________. And it's also snowy.", zh:"加拿大十一月冷嗎？是的，而且還會下雪。", options:["does","is","was","isn't"], ans:1, exp:"用 be 動詞問就用 be 動詞答。Is it...? → Yes, it <code>is</code>."},
+
+    // 10-4 How long...? (16-20)
+    {skill:"10-4", q:"How long does it ________ you to walk to school every day?", zh:"你每天走路到學校要花多久時間？", options:["spend","cost","take","use"], ans:2, exp:"How long does it <code>take</code> + 人 + to + 原形動詞，是固定句型。"},
+    {skill:"10-4", q:"It ________ me two hours to finish my homework last night.", zh:"昨晚我花了兩小時完成作業。", options:["takes","took","is taking","take"], ans:1, exp:"last night 表示過去式，take 的過去式為 <code>took</code>。"},
+    {skill:"10-4", q:"A: How long will it take to drive to Taichung?<br>B: It ________ take about two hours.", zh:"開車到台中要多久？大約兩小時。", options:["is","was","did","will"], ans:3, exp:"問句用 will，答句也用 <code>will</code>。"},
+    {skill:"10-4", q:"It takes my dad about thirty minutes ________ drive to work.", zh:"我爸爸開車上班大約要三十分鐘。", options:["for","of","to","at"], ans:2, exp:"It takes + 人 + 時間 + <code>to</code> + 原形動詞。"},
+    {skill:"10-4", q:"A: How long did it take you to clean the house?<br>B: ________ about forty minutes.", zh:"你打掃房子花了多久？大約四十分鐘。", options:["It","She","For","In"], ans:2, exp:"回答「花了多久」用 <code>For</code> + 時間。"},
+
+    // 10-5 Here 倒裝句 (21-25)
+    {skill:"10-5", q:"Here ________ the train! Hurry up!", zh:"火車來了！快點！", options:["come","comes","is come","coming"], ans:1, exp:"Here + 一般動詞 + 名詞。the train 是單數，動詞用第三人稱 <code>comes</code>。"},
+    {skill:"10-5", q:"Here ________ your books and pencils.", zh:"你的書和鉛筆在這裡。", options:["is","was","are","has"], ans:2, exp:"Here + be 動詞 + 名詞。books and pencils 是複數，用 <code>are</code>。"},
+    {skill:"10-5", q:"\"Where are my glasses?\" \"Here ________ are.\"", zh:"「我的眼鏡在哪？」「在這裡。」", options:["it","they","we","there"], ans:1, exp:"glasses 是複數名詞，代名詞用 <code>they</code>。Here + 代名詞 + be 動詞。"},
+    {skill:"10-5", q:"Here ________ Tom and his sister.", zh:"Tom 和他的姐姐來了。", options:["comes","come","is","has"], ans:1, exp:"Tom and his sister 是複數主詞，一般動詞用原形 <code>come</code>。"},
+    {skill:"10-5", q:"\"Is this the museum?\" \"Yes! Here we ________.\"", zh:"「這是博物館嗎？」「是的！我們到了。」", options:["is","are","come","go"], ans:1, exp:"Here + 代名詞 + be 動詞。we 搭配 <code>are</code>。"},
+
+    // 10-6 虛主詞 it (26-30)
+    {skill:"10-6", q:"It is important ________ us to study English every day.", zh:"每天讀英文對我們很重要。", options:["of","for","to","with"], ans:1, exp:"It is + 形容詞 + <code>for</code> + 人 + to + 原形動詞。"},
+    {skill:"10-6", q:"________ is not easy to learn a new language.", zh:"學一門新語言不容易。", options:["That","This","There","It"], ans:3, exp:"虛主詞 <code>It</code> 代替後面真正的主詞 to learn a new language。"},
+    {skill:"10-6", q:"It is dangerous ________ swim in the river alone.", zh:"一個人在河裡游泳很危險。", options:["for","at","to","in"], ans:2, exp:"It is + 形容詞 + <code>to</code> + 原形動詞。此句省略 for + 人。"},
+    {skill:"10-6", q:"Is it fun ________ you to play video games?", zh:"玩電動遊戲對你來說好玩嗎？", options:["to","for","of","with"], ans:1, exp:"疑問句結構不變：Is it + 形容詞 + <code>for</code> + 人 + to...?"},
+    {skill:"10-6", q:"It is wonderful ________ a trip to Hualien.", zh:"去花蓮旅行真棒。", options:["take","to take","taking","took"], ans:1, exp:"It is + 形容詞 + <code>to + 原形動詞</code>。"}
+];
+
+// PART 2: Cloze 5 questions
+const clozePassage = `Amy is visiting Taiwan from Canada. She writes in her diary:\n\n"Today is my first day in Kaohsiung. I asked my friend, 'What's the weather {31} here in summer?' She said, 'It is very hot and sometimes wet.' She was right! The weather {32} really hot today.\n\nThis morning, it {33} me about ninety minutes to get here from Taipei by high-speed rail. When I arrived, my friend was waiting at the station. She said, 'Here {34} the famous Liuhe Night Market! Let's go there tonight.' I was so excited!\n\nI think it is wonderful {35} visit Taiwan. I want to come back again!"`;
+
+const clozeQuestions = [
+    {ref:31, options:["look","like","feel","about"], ans:1, exp:"What's the weather <code>like</code>...? 是詢問天氣的固定句型。"},
+    {ref:32, options:["has","does","is","are"], ans:2, exp:"The weather + be 動詞 + 天氣形容詞。weather 是單數，用 <code>is</code>。"},
+    {ref:33, options:["takes","taking","took","take"], ans:2, exp:"描述今天早上已發生的事，用過去式 <code>took</code>。It took + 人 + 時間 + to V。"},
+    {ref:34, options:["are","is","comes","has"], ans:1, exp:"Here + be 動詞 + 名詞。the famous Liuhe Night Market 是單數，用 <code>is</code>。"},
+    {ref:35, options:["for","to","of","with"], ans:1, exp:"It is wonderful <code>to</code> + 原形動詞。虛主詞 it 的句型。"}
+];
+
+// PART 3: Handwriting 5 questions
+const hwQuestions = [
+    {type:"fill", num:36, prompt:"基隆常下雨。（請將底線處的英文手寫完成）", template:"We have lots of __________ in Keelung.", hint:"填入表示「雨」的天氣名詞", answer:"rain", exp:"「雨」的名詞是 <code>rain</code>。We have lots of rain = 我們有很多雨。"},
+    {type:"fill", num:37, prompt:"春天通常在三月來到台灣。（請將底線處的英文手寫完成）", template:"Spring usually __________ in March in Taiwan.", hint:"填入動詞（第三人稱單數現在式）", answer:"comes", exp:"Spring 是第三人稱單數，動詞加 s，故為 <code>comes</code>。"},
+    {type:"compose", num:38, prompt:"請用以下提示造出完整句子：", template:"important / students / do homework / every day", hint:"使用虛主詞 It is... for... to... 句型", answer:"It is important for students to do homework every day.", exp:"虛主詞 it 句型：<code>It is important for students to do homework every day.</code>"},
+    {type:"compose", num:39, prompt:"請將以下句子改為 \"How long\" 的問句：", template:"It will take Jane two hours to finish the report.", hint:"用 How long 開頭的未來式問句", answer:"How long will it take Jane to finish the report?", exp:"將 two hours 用 How long 代替，並將 will 移到 it 前面形成問句：<code>How long will it take Jane to finish the report?</code>"},
+    {type:"compose", num:40, prompt:"請將以下中文翻譯成英文（使用 Here 倒裝句）：", template:"你的咖啡在這裡。", hint:"Here + be 動詞 + 名詞", answer:"Here is your coffee.", exp:"Here + be 動詞 + 名詞（主詞）。your coffee 是單數，故用 is：<code>Here is your coffee.</code>"}
+];
+
+/* ================================================================
+   Scoring Config
+   ================================================================ */
+const PTS_MC = 2, PTS_CLOZE = 4, PTS_HW = 4;
+const TOTAL_Q = 40;
+const MAX_AUTO = mcQuestions.length * PTS_MC + clozeQuestions.length * PTS_CLOZE; // 80
+const MAX_HW = hwQuestions.length * PTS_HW; // 20
+const MAX_SCORE = MAX_AUTO + MAX_HW; // 100
+
+let graded = false;
+const mcSel = new Array(mcQuestions.length).fill(null);
+const clozeSel = new Array(clozeQuestions.length).fill(null);
+const canvasStrokes = {}; // { 0: [[{x,y},...], ...], ... }
+const canvasHasContent = new Array(hwQuestions.length).fill(false);
+
+/* ================================================================
+   Build UI
+   ================================================================ */
+// MC
+function buildMC() {
+    document.getElementById('quizMC').innerHTML = mcQuestions.map((it,i) => `
+    <div class="q-card" id="mc-card-${i}">
+        <div class="q-top">
+            <div class="q-num">${i+1}</div>
+            <span style="font-size:.78rem;color:#8a979e;font-weight:600;">${it.skill}</span>
+            <div class="q-points">${PTS_MC} 分</div>
+        </div>
+        <div class="q-text">${it.q}</div>
+        <button type="button" class="zh-toggle" onclick="toggleZh(${i})" id="mc-zhbtn-${i}">看中文提示</button>
+        <div class="zh-hint" id="mc-zh-${i}">${it.zh}</div>
+        <div class="options" id="mc-opts-${i}">
+            ${it.options.map((opt,oi) => `<div class="option" onclick="selectMC(${i},${oi})">(${String.fromCharCode(65+oi)}) ${opt}<span class="mark" id="mc-mark-${i}-${oi}"></span></div>`).join('')}
+        </div>
+        <div class="explain" id="mc-exp-${i}"></div>
+    </div>`).join('');
+}
+
+// Cloze
+function buildCloze() {
+    let passage = clozePassage;
+    clozeQuestions.forEach((item,i) => {
+        const sel = `<select class="cloze-select" id="cloze-sel-${i}" onchange="onCloze(${i})" aria-label="第 ${item.ref} 格">
+            <option value="" selected disabled>(${item.ref})</option>
+            ${item.options.map((opt,oi) => `<option value="${oi}">${opt}</option>`).join('')}
+        </select>`;
+        passage = passage.replace('{'+item.ref+'}', sel);
+    });
+    document.getElementById('clozePassage').innerHTML = passage.replace(/\n/g,'<br>');
+    document.getElementById('quizCloze').innerHTML = clozeQuestions.map((item,i) => `
+    <div class="q-card cloze-result" id="cloze-card-${i}" style="display:none;">
+        <div class="q-top"><div class="q-num">${item.ref}</div><div class="q-points">${PTS_CLOZE} 分</div></div>
+        <div class="explain" id="cloze-exp-${i}"></div>
+    </div>`).join('');
+}
+
+// Handwriting
+function buildHW() {
+    document.getElementById('quizHW').innerHTML = hwQuestions.map((it,i) => `
+    <div class="hw-card" id="hw-card-${i}">
+        <div class="q-top">
+            <div class="q-num">${it.num}</div>
+            <span class="hw-type-badge ${it.type}">${it.type==='fill'?'翻譯填充':'依提示造句'}</span>
+            <div class="q-points">${PTS_HW} 分</div>
+        </div>
+        <div class="hw-prompt">${it.prompt}</div>
+        <div class="hw-prompt" style="margin-bottom:4px;color:var(--primary-dark);">${it.template}</div>
+        <div class="hw-prompt-zh">💡 提示：${it.hint}</div>
+        <div class="canvas-wrap" id="canvas-wrap-${i}">
+            <canvas id="hw-canvas-${i}" height="140"></canvas>
+        </div>
+        <div class="canvas-toolbar">
+            <button class="canvas-btn" onclick="undoStroke(${i})">↩ 復原</button>
+            <button class="canvas-btn danger" onclick="clearCanvas(${i})">✕ 清除</button>
+        </div>
+        <div class="hw-submitted-tag" id="hw-submitted-${i}">✓ 已提交，等待老師批閱</div>
+        <div class="hw-answer-reveal" id="hw-answer-${i}"></div>
+    </div>`).join('');
+}
+
+buildMC();
+buildCloze();
+buildHW();
+
+/* ================================================================
+   Canvas Handwriting Engine
+   ================================================================ */
+function initCanvases() {
+    hwQuestions.forEach((_,i) => {
+        const canvas = document.getElementById(`hw-canvas-${i}`);
+        const wrap = document.getElementById(`canvas-wrap-${i}`);
+        const ctx = canvas.getContext('2d');
+        canvasStrokes[i] = [];
+        let drawing = false;
+        let currentStroke = [];
+
+        function resize() {
+            const rect = wrap.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = 140 * dpr;
+            canvas.style.height = '140px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            redraw(i);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function drawGuideLines() {
+            ctx.save();
+            ctx.strokeStyle = '#e8eef2';
+            ctx.lineWidth = 1;
+            const w = canvas.width / (window.devicePixelRatio||1);
+            for (let y = 35; y < 140; y += 35) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+            const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
+            return {x, y};
+        }
+
+        function startDraw(e) {
+            if (graded) return;
+            e.preventDefault();
+            drawing = true;
+            currentStroke = [getPos(e)];
+        }
+        function moveDraw(e) {
+            if (!drawing || graded) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            currentStroke.push(pos);
+            // Draw current stroke
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            if (currentStroke.length >= 2) {
+                const p1 = currentStroke[currentStroke.length-2];
+                const p2 = currentStroke[currentStroke.length-1];
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
+        }
+        function endDraw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            drawing = false;
+            if (currentStroke.length > 1) {
+                canvasStrokes[i].push([...currentStroke]);
+                canvasHasContent[i] = true;
+                document.getElementById(`hw-card-${i}`).classList.add('answered');
+                updateProgress();
+            }
+            currentStroke = [];
+        }
+
+        // Pointer events (unified mouse + touch)
+        canvas.addEventListener('pointerdown', startDraw);
+        canvas.addEventListener('pointermove', moveDraw);
+        canvas.addEventListener('pointerup', endDraw);
+        canvas.addEventListener('pointerleave', endDraw);
+        canvas.addEventListener('pointercancel', endDraw);
+
+        // Initial guide lines
+        drawGuideLines();
+    });
+}
+
+function redraw(i) {
+    const canvas = document.getElementById(`hw-canvas-${i}`);
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width / (window.devicePixelRatio||1);
+    ctx.clearRect(0, 0, w, 140);
+    // Guide lines
+    ctx.save();
+    ctx.strokeStyle = '#e8eef2'; ctx.lineWidth = 1;
+    for (let y = 35; y < 140; y += 35) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+    ctx.restore();
+    // Strokes
+    ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    (canvasStrokes[i]||[]).forEach(stroke => {
+        if (stroke.length < 2) return;
+        ctx.beginPath();
+        ctx.moveTo(stroke[0].x, stroke[0].y);
+        for (let j = 1; j < stroke.length; j++) ctx.lineTo(stroke[j].x, stroke[j].y);
+        ctx.stroke();
+    });
+}
+
+window.undoStroke = function(i) {
+    if (graded) return;
+    if (canvasStrokes[i] && canvasStrokes[i].length > 0) {
+        canvasStrokes[i].pop();
+        canvasHasContent[i] = canvasStrokes[i].length > 0;
+        if (!canvasHasContent[i]) document.getElementById(`hw-card-${i}`).classList.remove('answered');
+        redraw(i);
+        updateProgress();
+    }
+};
+
+window.clearCanvas = function(i) {
+    if (graded) return;
+    canvasStrokes[i] = [];
+    canvasHasContent[i] = false;
+    document.getElementById(`hw-card-${i}`).classList.remove('answered');
+    redraw(i);
+    updateProgress();
+};
+
+/* ================================================================
+   Interaction
+   ================================================================ */
+window.toggleZh = function(i) {
+    const h = document.getElementById(`mc-zh-${i}`);
+    const b = document.getElementById(`mc-zhbtn-${i}`);
+    const open = h.classList.toggle('show');
+    b.textContent = open ? '隱藏中文提示' : '看中文提示';
+};
+
+window.selectMC = function(i, oi) {
+    if (graded) return;
+    mcSel[i] = oi;
+    document.querySelectorAll(`#mc-opts-${i} .option`).forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll(`#mc-opts-${i} .option`)[oi].classList.add('selected');
+    document.getElementById(`mc-card-${i}`).classList.add('answered');
+    updateProgress();
+};
+
+window.onCloze = function(i) {
+    if (graded) return;
+    const sel = document.getElementById(`cloze-sel-${i}`);
+    clozeSel[i] = sel.value === '' ? null : parseInt(sel.value, 10);
+    sel.classList.toggle('filled', sel.value !== '');
+    updateProgress();
+};
+
+const submitBtn = document.getElementById('submitBtn');
+const submitHint = document.getElementById('submitHint');
+const answeredCountEl = document.getElementById('answeredCount');
+const progressFill = document.getElementById('progressFill');
+
+function updateProgress() {
+    const mcDone = mcSel.filter(s => s !== null).length;
+    const clozeDone = clozeSel.filter(s => s !== null).length;
+    const hwDone = canvasHasContent.filter(Boolean).length;
+    const done = mcDone + clozeDone + hwDone;
+    answeredCountEl.textContent = done;
+    progressFill.style.width = (done / TOTAL_Q * 100) + '%';
+    const remain = TOTAL_Q - done;
+    if (remain === 0) {
+        submitBtn.disabled = false;
+        submitHint.textContent = '全部 40 題作答完成，可以交卷囉！';
+        submitHint.style.color = 'var(--success-color)';
+    } else {
+        submitBtn.disabled = true;
+        submitHint.textContent = `還有 ${remain} 題未作答`;
+        submitHint.style.color = '#8a979e';
+    }
+}
+updateProgress();
+
+/* ================================================================
+   Grading & Firebase Submit
+   ================================================================ */
+function expHTML(right, ansText, ansLetter, exp) {
+    const v = right ? '<div class="verdict ok">✓ 答對了</div>' : '<div class="verdict no">✗ 答錯了</div>';
+    return `${v}<div class="ans-line">正確答案：<b>(${ansLetter}) ${ansText}</b></div><div>${exp}</div>`;
+}
+
+window.gradeQuiz = async function() {
+    if (graded) return;
+    graded = true;
+    let scoreMC = 0, scoreCloze = 0, correctCount = 0;
+
+    // Grade MC
+    mcQuestions.forEach((item, i) => {
+        const card = document.getElementById(`mc-card-${i}`);
+        card.classList.add('graded');
+        const opts = document.querySelectorAll(`#mc-opts-${i} .option`);
+        const chosen = mcSel[i];
+        const right = chosen === item.ans;
+        if (right) { scoreMC += PTS_MC; correctCount++; }
+        opts.forEach((o, oi) => {
+            o.classList.remove('selected');
+            const mk = document.getElementById(`mc-mark-${i}-${oi}`);
+            if (oi === item.ans) { o.classList.add('correct'); mk.textContent = '✓'; }
+            if (oi === chosen && !right) { o.classList.add('wrong'); mk.textContent = '✗'; }
+        });
+        document.getElementById(`mc-exp-${i}`).innerHTML = expHTML(right, item.options[item.ans], String.fromCharCode(65 + item.ans), item.exp);
+    });
+
+    // Grade Cloze
+    clozeQuestions.forEach((item, i) => {
+        const sel = document.getElementById(`cloze-sel-${i}`);
+        const chosen = clozeSel[i];
+        const right = chosen === item.ans;
+        if (right) { scoreCloze += PTS_CLOZE; correctCount++; }
+        sel.classList.add(right ? 'ok' : 'bad');
+        sel.disabled = true;
+        const card = document.getElementById(`cloze-card-${i}`);
+        card.style.display = '';
+        card.classList.add('graded');
+        document.getElementById(`cloze-exp-${i}`).innerHTML = expHTML(right, item.options[item.ans], String.fromCharCode(65 + item.ans), item.exp);
+    });
+
+    // Show HW answers + lock canvases
+    hwQuestions.forEach((item, i) => {
+        document.getElementById(`hw-submitted-${i}`).classList.add('show');
+        const ansDiv = document.getElementById(`hw-answer-${i}`);
+        ansDiv.innerHTML = `<div style="background:#f7fafb;padding:12px 16px;border-radius:8px;border-left:4px solid var(--accent-color);"><b>參考答案：</b><span style="font-family:var(--font-en);">${item.answer}</span><br><span style="font-size:.9rem;">${item.exp}</span></div>`;
+        ansDiv.classList.add('show');
+    });
+
+    const autoTotal = scoreMC + scoreCloze;
+    showResult(autoTotal, correctCount, scoreMC, scoreCloze);
+
+    // Firebase submit
+    await submitToFirebase(scoreMC, scoreCloze);
+
+    submitBtn.style.display = 'none';
+    submitHint.style.display = 'none';
+};
+
+function showResult(autoTotal, correctCount, sMC, sCloze) {
+    const panel = document.getElementById('resultPanel');
+    const pct = Math.round(autoTotal / MAX_AUTO * 100);
+    document.getElementById('scoreBig').innerHTML = `${autoTotal}<span>/${MAX_AUTO}</span>`;
+    document.getElementById('resultRing').style.setProperty('--pct', pct + '%');
+
+    let grade, sub;
+    if (pct === 100) { grade = '🏆 選擇題滿分！'; sub = '太厲害了！等老師批閱手寫題後就是完整成績。'; }
+    else if (pct >= 90) { grade = '🌟 表現優異'; sub = '幾乎全對！看看錯題解析就更穩了。'; }
+    else if (pct >= 80) { grade = '🎉 表現很好'; sub = '大部分都掌握了，再看看解析加強。'; }
+    else if (pct >= 60) { grade = '👍 及格通過'; sub = '基礎不錯，建議複習答錯的文法點。'; }
+    else { grade = '💪 再接再厲'; sub = '跟著解析一題一題弄懂，下次一定進步。'; }
+
+    document.getElementById('gradeMsg').textContent = grade;
+    document.getElementById('subMsg').textContent = `${sub}（選擇題答對 ${correctCount} / ${mcQuestions.length + clozeQuestions.length} 題）`;
+    document.getElementById('breakdown').innerHTML = `
+        <div class="b-item"><b>${sMC} / ${mcQuestions.length*PTS_MC}</b><span class="bl">單題選擇</span></div>
+        <div class="b-item"><b>${sCloze} / ${clozeQuestions.length*PTS_CLOZE}</b><span class="bl">克漏字</span></div>
+        <div class="b-item"><b>待批閱</b><span class="bl">手寫題 (${MAX_HW}分)</span></div>`;
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ================================================================
+   Firebase Submit
+   ================================================================ */
+async function submitToFirebase(scoreMC, scoreCloze) {
+    const fbStatus = document.getElementById('fbStatus');
+    if (!firebaseReady) {
+        fbStatus.className = 'firebase-status err';
+        fbStatus.textContent = '⚠ Firebase 未設定，作答結果僅顯示於本頁，無法雲端儲存。';
+        return;
+    }
+    try {
+        fbStatus.className = 'firebase-status';
+        fbStatus.style.display = 'block';
+        fbStatus.style.background = '#f7fafb';
+        fbStatus.style.color = '#7a8a93';
+        fbStatus.textContent = '⏳ 正在上傳作答紀錄...';
+
+        // Collect canvas images
+        const hwImages = {};
+        hwQuestions.forEach((_, i) => {
+            const canvas = document.getElementById(`hw-canvas-${i}`);
+            hwImages[`q${i+36}`] = canvas.toDataURL('image/png');
+        });
+
+        const submission = {
+            studentName,
+            studentSeat: parseInt(studentSeat),
+            unit: 'B3U10',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            mcAnswers: mcSel.map((sel, i) => ({
+                question: i + 1,
+                selected: sel,
+                correct: mcQuestions[i].ans,
+                isCorrect: sel === mcQuestions[i].ans
+            })),
+            clozeAnswers: clozeSel.map((sel, i) => ({
+                question: clozeQuestions[i].ref,
+                selected: sel,
+                correct: clozeQuestions[i].ans,
+                isCorrect: sel === clozeQuestions[i].ans
+            })),
+            hwImages,
+            scoreMC,
+            scoreCloze,
+            scoreAuto: scoreMC + scoreCloze,
+            scoreHW: null, // teacher grades this later
+            scoreTotal: null
+        };
+
+        await db.collection('quiz_submissions').add(submission);
+        fbStatus.className = 'firebase-status ok';
+        fbStatus.textContent = '✓ 作答紀錄已成功上傳！老師可以在後台檢視你的手寫內容。';
+    } catch(err) {
+        console.error('Firebase submit error:', err);
+        fbStatus.className = 'firebase-status err';
+        fbStatus.textContent = `✗ 上傳失敗：${err.message}。請截圖保存你的作答。`;
+    }
+}
+
+/* ================================================================
+   Reset
+   ================================================================ */
+window.resetQuiz = function() {
+    if (!confirm('確定要重新作答嗎？所有已填答案會被清除。')) return;
+    graded = false;
+    mcSel.fill(null); clozeSel.fill(null);
+    canvasHasContent.fill(false);
+    Object.keys(canvasStrokes).forEach(k => canvasStrokes[k] = []);
+    document.getElementById('resultPanel').classList.remove('show');
+    document.getElementById('fbStatus').className = 'firebase-status';
+    submitBtn.style.display = ''; submitHint.style.display = '';
+    buildMC(); buildCloze(); buildHW();
+    initCanvases();
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+</script>
+</body>
+</html>
