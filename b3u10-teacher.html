@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 10 教師後台 - 學生作答檢視</title>
+    <title>B4 Unit 1 教師後台 - 學生作答檢視</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary: #3d5f73; --primary-light: #6a8fa8;
-            --accent: #e8a55d; --success: #6a9680; --error: #c27a74;
-            --bg: #f4f7f9; --card: #fff; --text: #3a4a54;
+            --primary: #064b5b; --primary-light: #0ea5b1;
+            --accent: #f27aad; --success: #2f8a62; --error: #c85f6b;
+            --bg: #f5fbfa; --card: #fff; --text: #263846;
             --font-zh: "Noto Sans TC", sans-serif; --font-en: "Inter", sans-serif;
         }
         * { box-sizing: border-box; }
-        body { font-family: var(--font-zh); background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        body { font-family: var(--font-zh); background: radial-gradient(circle at 10% 5%, rgba(14,165,177,.12), transparent 30%), linear-gradient(135deg, #f5fbfa 0%, #ffffff 60%, #f7fcfb 100%); color: var(--text); margin: 0; padding: 0; }
         .topbar {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: radial-gradient(circle at 12% 15%, rgba(242,122,173,.24), transparent 25%), linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.12);
         }
@@ -43,7 +43,7 @@
             gap: 14px; margin-bottom: 28px;
         }
         .stat-card {
-            background: var(--card); border-radius: 12px; padding: 18px; text-align: center;
+            background: var(--card); border-radius: 16px; padding: 18px; text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
         .stat-card .num { font-family: var(--font-en); font-size: 1.8rem; font-weight: 700; color: var(--primary); }
@@ -51,7 +51,7 @@
 
         .student-list { display: flex; flex-direction: column; gap: 12px; }
         .student-row {
-            background: var(--card); border-radius: 12px; padding: 18px 20px;
+            background: var(--card); border-radius: 16px; padding: 18px 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer;
             transition: transform .15s, box-shadow .15s; border: 1px solid #e8eef2;
         }
@@ -120,7 +120,7 @@
 <body>
 
 <div class="topbar">
-    <h1>📋 Unit 10 教師後台</h1>
+    <h1>📋 B4 Unit 1 教師後台</h1>
     <div class="count" id="topCount"></div>
 </div>
 
@@ -174,10 +174,11 @@ try {
 } catch(e) { console.warn("Firebase init error:", e); }
 
 const hwAnswers = {
-    q36: "rain", q37: "comes",
-    q38: "It is important for students to do homework every day.",
-    q39: "How long will it take Jane to finish the report?",
-    q40: "Here is your coffee."
+    q36: "Mandy is a pretty girl.",
+    q37: "wetter",
+    q38: "Simon’s bag is more expensive than Mark’s bag.",
+    q39: "Which camera is cheaper, the big one or the small one?",
+    q40: "The more we make, the more we spend."
 };
 
 let submissions = [];
@@ -200,7 +201,7 @@ async function loadSubmissions() {
     }
     try {
         const snap = await db.collection('quiz_submissions')
-            .where('unit', '==', 'B3U10')
+            .where('unit', '==', 'B4U1')
             .orderBy('timestamp', 'desc')
             .get();
         submissions = [];
