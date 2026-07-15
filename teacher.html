@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B4 Unit 1 教師後台 - 學生作答檢視</title>
+    <title>B4 Unit 2 教師後台 - 學生作答檢視</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary: #064b5b; --primary-light: #0ea5b1;
-            --accent: #f27aad; --success: #2f8a62; --error: #c85f6b;
+            --primary: #334f50; --primary-light: #527a7a;
+            --accent: #b0835f; --success: #2f8a62; --error: #c85f6b;
             --bg: #f5fbfa; --card: #fff; --text: #263846;
             --font-zh: "Noto Sans TC", sans-serif; --font-en: "Inter", sans-serif;
         }
@@ -120,7 +120,7 @@
 <body>
 
 <div class="topbar">
-    <h1>📋 B4 Unit 1 教師後台</h1>
+    <h1>📋 B4 Unit 2 教師後台</h1>
     <div class="count" id="topCount"></div>
 </div>
 
@@ -174,11 +174,11 @@ try {
 } catch(e) { console.warn("Firebase init error:", e); }
 
 const hwAnswers = {
-    q36: "Mandy is a pretty girl.",
-    q37: "wetter",
-    q38: "Simon’s bag is more expensive than Mark’s bag.",
-    q39: "Which camera is cheaper, the big one or the small one?",
-    q40: "The more we make, the more we spend."
+    q36: "the thinnest",
+    q37: "Math is the most difficult subject of all.",
+    q38: "Jack is the taller of the two brothers.",
+    q39: "Leo is taller than any other boy in his class.",
+    q40: "No other mountain in Taiwan is higher than Yushan."
 };
 
 let submissions = [];
@@ -201,7 +201,7 @@ async function loadSubmissions() {
     }
     try {
         const snap = await db.collection('quiz_submissions')
-            .where('unit', '==', 'B4U1')
+            .where('unit', '==', 'B4U2')
             .orderBy('timestamp', 'desc')
             .get();
         submissions = [];
