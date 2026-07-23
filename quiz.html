@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>國中英語文法通 4 - Unit 2 綜合測驗</title>
+    <title>國中英語文法通 4 - Unit 3 綜合測驗</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,11 +12,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary-color: #527a7a;
-            --primary-light: #dce8e4;
-            --primary-dark: #334f50;
-            --secondary-color: #f7f6f1;
-            --text-color: #263846;
+            --primary-color: #50727f;
+            --primary-light: #d9e5ea;
+            --primary-dark: #34505a;
+            --secondary-color: #f7f7f3;
+            --text-color: #2d3d42;
             --accent-color: #b0835f;
             --success-color: #2f8a62;
             --error-color: #c85f6b;
@@ -327,8 +327,8 @@
 <!-- ===== LOGIN ===== -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-        <h1>📝 B4 Unit 2 綜合測驗</h1>
-        <div class="subtitle">國中英語文法通 4 · 形容詞最高級 / in / of all / of the two / than any other / no other</div>
+        <h1>📝 B4 Unit 3 綜合測驗</h1>
+        <div class="subtitle">國中英語文法通 4 · 情態副詞形成 / as...as / how 問句 / 比較級與最高級</div>
         <label for="loginName">姓名</label>
         <input type="text" id="loginName" placeholder="請輸入你的姓名" autocomplete="off">
         <label for="loginSeat">座號</label>
@@ -341,7 +341,7 @@
 <!-- ===== MAIN ===== -->
 <div class="main-wrap" id="mainWrap" style="display:none;">
     <div class="quiz-header">
-        <h1>📝 B4 Unit 2 綜合測驗</h1>
+        <h1>📝 B4 Unit 3 綜合測驗</h1>
         <div class="desc">共 40 題，滿分 100 分。選擇題自動批改，手寫題由老師批閱。全部作答完成後按交卷。</div>
         <div class="student-tag" id="studentTag"></div>
     </div>
@@ -389,7 +389,7 @@
         <div class="submit-hint" id="submitHint">還有 40 題未作答</div>
         <div class="firebase-status" id="fbStatus"></div>
     </div>
-    <div class="foot">資料來源：國中英語文法通 4 (Unit 2) · 互動練習 · 滿分 100 分</div>
+    <div class="foot">資料來源：國中英語文法通 4 (Unit 3) · 情態副詞互動練習 · 滿分 100 分</div>
 </div>
 
 <script>
@@ -437,455 +437,457 @@ function doLogin() {
 // PART 1: MC 30 questions
 const mcQuestions = [
     {
-        "skill": "2-1",
-        "q": "high → ________",
-        "zh": "high 的最高級是什麼？",
+        "skill": "3-1",
+        "q": "comfortable → ________",
+        "zh": "請選出 comfortable 的副詞形式。",
         "options": [
-            "the higher",
-            "the highest",
-            "the most high",
-            "highest than"
+            "comfortablely",
+            "comfortably",
+            "comfortable",
+            "more comfortable"
         ],
         "ans": 1,
-        "exp": "單音節形容詞通常直接加 <code>-est</code>：high → <code>the highest</code>。"
+        "exp": "字尾是 <code>-le</code> 時，去掉 e 再加 y：comfortable → <code>comfortably</code>。"
     },
     {
-        "skill": "2-1",
-        "q": "thin → ________",
-        "zh": "thin 的最高級是什麼？",
+        "skill": "3-1",
+        "q": "angry → ________",
+        "zh": "請選出 angry 的副詞形式。",
         "options": [
-            "the thinest",
-            "the thinnest",
-            "the most thin",
-            "the thinner"
-        ],
-        "ans": 1,
-        "exp": "短母音＋子音結尾時，重複字尾再加 <code>-est</code>：thin → <code>the thinnest</code>。"
-    },
-    {
-        "skill": "2-1",
-        "q": "friendly → ________",
-        "zh": "friendly 的最高級是什麼？",
-        "options": [
-            "the friendlyest",
-            "the friendliest",
-            "the most friendlyest",
-            "the friendlier"
-        ],
-        "ans": 1,
-        "exp": "子音＋y 結尾，去 y 加 <code>-iest</code>：friendly → <code>the friendliest</code>。"
-    },
-    {
-        "skill": "2-1",
-        "q": "successful → ________",
-        "zh": "successful 的最高級是什麼？",
-        "options": [
-            "the successfulest",
-            "the more successful",
-            "the most successful",
-            "most successful than"
+            "angryly",
+            "angriely",
+            "angrily",
+            "angry"
         ],
         "ans": 2,
-        "exp": "較長的形容詞通常在前面加 <code>the most</code>。"
+        "exp": "子音＋y 結尾時，去 y 加 <code>-ily</code>：angry → <code>angrily</code>。"
     },
     {
-        "skill": "2-1",
-        "q": "bad → ________",
-        "zh": "bad 的最高級是不規則變化。",
+        "skill": "3-1",
+        "q": "The adverb form of good is ________.",
+        "zh": "good 的副詞是不規則變化。",
         "options": [
-            "the baddest",
-            "the worse",
-            "the worst",
-            "the most bad"
+            "well",
+            "goodly",
+            "better",
+            "good"
         ],
-        "ans": 2,
-        "exp": "bad 的比較級是 worse，最高級是不規則形式 <code>the worst</code>。"
+        "ans": 0,
+        "exp": "good 是形容詞；表示「做得好」時使用不規則副詞 <code>well</code>。"
     },
     {
-        "skill": "2-1",
-        "q": "little → ________",
-        "zh": "little 的最高級是不規則變化。",
+        "skill": "3-1",
+        "q": "Which word is an adjective, not an adverb?",
+        "zh": "哪一個字是形容詞，而不是副詞？",
         "options": [
-            "the less",
-            "the least",
-            "the littlest",
-            "the most little"
+            "quickly",
+            "carefully",
+            "badly",
+            "friendly"
         ],
-        "ans": 1,
-        "exp": "little 的最高級是不規則形式 <code>the least</code>。"
+        "ans": 3,
+        "exp": "<code>friendly</code> 雖然以 -ly 結尾，仍是形容詞。"
     },
     {
-        "skill": "2-2",
-        "q": "Louis is ________ runner in the world.",
-        "zh": "Louis 是世界上最快的跑者。",
+        "skill": "3-2",
+        "q": "Mr. Wu drives very ________. He is a fast driver.",
+        "zh": "吳先生開車很快。fast 可同時作形容詞與副詞。",
         "options": [
-            "the fastest",
+            "fast",
+            "fastly",
             "faster",
+            "fastest"
+        ],
+        "ans": 0,
+        "exp": "fast 作副詞時仍是 <code>fast</code>，不加 -ly。"
+    },
+    {
+        "skill": "3-2",
+        "q": "Mandy is a ________ girl, and she dances ________.",
+        "zh": "第一格修飾 girl，第二格修飾 dances。",
+        "options": [
+            "happily / happy",
+            "happy / happy",
+            "happy / happily",
+            "happily / happily"
+        ],
+        "ans": 2,
+        "exp": "形容詞 <code>happy</code> 修飾名詞 girl；副詞 <code>happily</code> 修飾動詞 dances。"
+    },
+    {
+        "skill": "3-2",
+        "q": "He wrote the letter ________.",
+        "zh": "此處需要副詞修飾 wrote。",
+        "options": [
+            "careful",
+            "carefully",
+            "carefulness",
+            "more careful"
+        ],
+        "ans": 1,
+        "exp": "副詞 <code>carefully</code> 描述他「如何寫」這封信。"
+    },
+    {
+        "skill": "3-2",
+        "q": "Tom was ________ for school because he got up ________.",
+        "zh": "late 可作形容詞，也可作副詞。",
+        "options": [
+            "lately / late",
+            "late / lately",
+            "lately / lately",
+            "late / late"
+        ],
+        "ans": 3,
+        "exp": "be late 中 late 是形容詞；got up late 中 late 是同形副詞。<code>lately</code> 表示「最近」。"
+    },
+    {
+        "skill": "3-3",
+        "q": "He can run ________ I can.",
+        "zh": "他可以跑得和我一樣快。",
+        "options": [
+            "as faster as",
+            "so fast than",
+            "as fast as",
+            "fast as"
+        ],
+        "ans": 2,
+        "exp": "同等比較使用 <code>as + 副詞原形 + as</code>：as fast as。"
+    },
+    {
+        "skill": "3-3",
+        "q": "She can't write ________ her sister.",
+        "zh": "她寫得沒有她姊姊好。",
+        "options": [
+            "as well as",
+            "as good as",
+            "better than",
+            "so better as"
+        ],
+        "ans": 0,
+        "exp": "write 要用副詞 well；否定句可用 <code>not ... as well as</code>。"
+    },
+    {
+        "skill": "3-3",
+        "q": "Kevin learns English ________ Susan.",
+        "zh": "Kevin 學英文和 Susan 一樣快。",
+        "options": [
+            "as quick as",
+            "as quickly as",
+            "more quickly as",
+            "quickly than"
+        ],
+        "ans": 1,
+        "exp": "修飾 learns 要用副詞 quickly，句型為 <code>as quickly as</code>。"
+    },
+    {
+        "skill": "3-4",
+        "q": "She teaches English happily. Which question asks about the way she teaches?",
+        "zh": "哪一個問句是在詢問她教英文的方式？",
+        "options": [
+            "What does she teach happily?",
+            "Who teaches English happily?",
+            "How well is her English?",
+            "How does she teach English?"
+        ],
+        "ans": 3,
+        "exp": "詢問「如何做某事」使用 <code>How + 助動詞 + 主詞 + 原形動詞...?</code>"
+    },
+    {
+        "skill": "3-4",
+        "q": "Kevin plays tennis very well. Which question asks about his skill level?",
+        "zh": "哪個問句是在問 Kevin 網球打得多好？",
+        "options": [
+            "How does Kevin like tennis?",
+            "What does Kevin play well?",
+            "How well does Kevin play tennis?",
+            "How is Kevin playing tennis every day?"
+        ],
+        "ans": 2,
+        "exp": "問「做得多好」使用 <code>How well + 助動詞 + 主詞 + V...?</code>"
+    },
+    {
+        "skill": "3-4",
+        "q": "How is Emily doing at school?",
+        "zh": "請選出文法正確且合適的回答。",
+        "options": [
+            "She is doing well at school.",
+            "She is doing goodly at school.",
+            "She does a well student.",
+            "She is well student at school."
+        ],
+        "ans": 0,
+        "exp": "do 的表現好壞用副詞 <code>well</code>：She is doing well at school."
+    },
+    {
+        "skill": "3-5",
+        "q": "well → ________",
+        "zh": "請選出 well 的比較級。",
+        "options": [
+            "more well",
+            "better",
+            "weller",
+            "the best"
+        ],
+        "ans": 1,
+        "exp": "well 的比較級是不規則形式 <code>better</code>。"
+    },
+    {
+        "skill": "3-5",
+        "q": "carefully → ________",
+        "zh": "請選出 carefully 的比較級。",
+        "options": [
+            "carefullier",
+            "carefullyer",
+            "the most carefully",
+            "more carefully"
+        ],
+        "ans": 3,
+        "exp": "以 -ly 結尾的副詞，通常在前面加 <code>more</code>：more carefully。"
+    },
+    {
+        "skill": "3-5",
+        "q": "far → ________",
+        "zh": "far 的比較級可有兩種形式。",
+        "options": [
+            "more far",
+            "farest",
+            "farther / further",
+            "farer"
+        ],
+        "ans": 2,
+        "exp": "far 的比較級可寫成 <code>farther</code> 或 <code>further</code>。"
+    },
+    {
+        "skill": "3-5",
+        "q": "Sue didn't write as carefully as Lisa. Which sentence has the same meaning?",
+        "zh": "Sue 寫得沒有 Lisa 仔細。",
+        "options": [
+            "Lisa wrote more carefully than Sue.",
+            "Sue wrote more carefully than Lisa.",
+            "Lisa wrote as carelessly as Sue.",
+            "Sue and Lisa wrote equally carefully."
+        ],
+        "ans": 0,
+        "exp": "not as carefully as 表示較不仔細，因此 Lisa <code>wrote more carefully than</code> Sue。"
+    },
+    {
+        "skill": "3-5",
+        "q": "I can't walk as fast as you. This means ________.",
+        "zh": "我走得沒有你快。",
+        "options": [
+            "I walk faster than you.",
+            "You walk as slowly as I.",
+            "We walk at the same speed.",
+            "You walk faster than I."
+        ],
+        "ans": 3,
+        "exp": "I can't walk as fast as you 表示「你走得比我快」：<code>You walk faster than I.</code>"
+    },
+    {
+        "skill": "3-6",
+        "q": "Jack is playing tennis ________.",
+        "zh": "Jack 的網球打得越來越好。",
+        "options": [
+            "more better",
+            "better and better",
+            "best and best",
+            "more and more good"
+        ],
+        "ans": 1,
+        "exp": "表示「越來越好」使用比較級重複：<code>better and better</code>。"
+    },
+    {
+        "skill": "3-6",
+        "q": "He writes ________ now.",
+        "zh": "他現在寫得越來越仔細。",
+        "options": [
+            "carefullier and carefullier",
+            "more carefully and more carefully",
+            "more and more carefully",
+            "most and most carefully"
+        ],
+        "ans": 2,
+        "exp": "較長的副詞表示「越來越……」時，用 <code>more and more + 副詞</code>。"
+    },
+    {
+        "skill": "3-6",
+        "q": "The eagle is flying ________ in the sky.",
+        "zh": "老鷹在天空中飛得越來越高。",
+        "options": [
+            "higher and higher",
+            "more high and high",
+            "highest and highest",
+            "more and more high"
+        ],
+        "ans": 0,
+        "exp": "high 的比較級是 higher；「越來越高」為 <code>higher and higher</code>。"
+    },
+    {
+        "skill": "3-7",
+        "q": "Jack is a boy in Class 802. He plays tennis better than ________ boy in his class.",
+        "zh": "Jack 也是班上的男生，因此比較時要排除自己。",
+        "options": [
+            "any",
+            "all the",
+            "the other",
+            "any other"
+        ],
+        "ans": 3,
+        "exp": "主詞屬於同一比較群體時，使用 <code>than any other + 單數名詞</code>。"
+    },
+    {
+        "skill": "3-7",
+        "q": "The baby laughs more happily than ________ in the room.",
+        "zh": "這個寶寶比房間裡其他所有寶寶笑得都開心。",
+        "options": [
+            "any babies",
+            "all the other babies",
+            "all other baby",
+            "the others baby"
+        ],
+        "ans": 1,
+        "exp": "<code>all the other</code> 後接複數名詞：all the other babies。"
+    },
+    {
+        "skill": "3-7",
+        "q": "The turtle runs the most slowly in the zoo. Which rewrite is correct?",
+        "zh": "請用比較級表達相同的最高級概念。",
+        "options": [
+            "The turtle runs slowly than all animals in the zoo.",
+            "The turtle runs the slower than any animal in the zoo.",
+            "The turtle runs more slowly than any other animal in the zoo.",
+            "The turtle runs the most slowly than other animals in the zoo."
+        ],
+        "ans": 2,
+        "exp": "主詞也屬於動物群體，要用 <code>more slowly than any other animal</code>。"
+    },
+    {
+        "skill": "3-7",
+        "q": "Helen plays the drums more loudly than ________ in the band.",
+        "zh": "Helen 比樂團裡其他所有人打鼓都大聲。",
+        "options": [
+            "all the other people",
+            "any people",
+            "all the other person",
+            "the all people"
+        ],
+        "ans": 0,
+        "exp": "<code>all the other + 複數名詞</code>：all the other people。"
+    },
+    {
+        "skill": "3-8",
+        "q": "Among all the students, Kevin runs ________.",
+        "zh": "Kevin 在所有學生中跑得最快。",
+        "options": [
+            "faster",
+            "the fastest",
             "the faster",
             "most fast"
         ],
-        "ans": 0,
-        "exp": "有明確的三者以上比較範圍時，用 <code>the + 最高級</code>。"
+        "ans": 1,
+        "exp": "三者以上比較使用副詞最高級：<code>the fastest</code>。"
     },
     {
-        "skill": "2-2",
-        "q": "This computer is ________ of all.",
-        "zh": "這台電腦是所有電腦中最好的。",
+        "skill": "3-8",
+        "q": "Amy checked her work ________ of all.",
+        "zh": "Amy 在所有人中檢查作業最仔細。",
         "options": [
-            "better",
-            "the better",
+            "more carefully",
+            "the carefulest",
+            "the more carefully",
+            "the most carefully"
+        ],
+        "ans": 3,
+        "exp": "以 -ly 結尾的副詞最高級使用 <code>the most + 副詞</code>。"
+    },
+    {
+        "skill": "3-9",
+        "q": "Of the two players, Leo plays ________.",
+        "zh": "兩位選手中，Leo 打得比較好。",
+        "options": [
             "the best",
-            "best than"
+            "better than",
+            "the better",
+            "the most well"
         ],
         "ans": 2,
-        "exp": "of all 表示三者以上的範圍，good 的最高級是 <code>the best</code>。"
+        "exp": "限定兩者時，用 <code>the + 副詞比較級 + of the two</code>：the better。"
     },
     {
-        "skill": "2-2",
-        "q": "Math is ________ subject of all.",
-        "zh": "數學是所有科目中最難的。",
+        "skill": "3-9",
+        "q": "Robert got up ________ of the four boys.",
+        "zh": "Robert 是四位男孩中最早起床的。",
         "options": [
-            "the most difficult",
-            "more difficult",
-            "most difficult",
-            "the difficultest"
+            "the earliest",
+            "the earlier",
+            "earlier than",
+            "most early"
         ],
         "ans": 0,
-        "exp": "difficult 是多音節形容詞，最高級為 <code>the most difficult</code>。"
-    },
-    {
-        "skill": "2-2",
-        "q": "Taipei 101 is one of ________ buildings in Taiwan.",
-        "zh": "台北 101 是台灣最高的建築物之一。",
-        "options": [
-            "the taller",
-            "the tallest",
-            "tallest",
-            "the most tall"
-        ],
-        "ans": 1,
-        "exp": "<code>one of the + 最高級 + 複數名詞</code> 表示「最……之一」。"
-    },
-    {
-        "skill": "2-3",
-        "q": "Amy is ________ of the three girls.",
-        "zh": "Amy 是三位女孩中最年輕的。",
-        "options": [
-            "the youngest",
-            "younger",
-            "the younger",
-            "youngest than"
-        ],
-        "ans": 0,
-        "exp": "<code>of the three</code> 是三者範圍，要用最高級 <code>the youngest</code>。"
-    },
-    {
-        "skill": "2-3",
-        "q": "This is ________ of the four questions.",
-        "zh": "這是四題中最簡單的一題。",
-        "options": [
-            "the easiest",
-            "easier",
-            "the easier",
-            "the most easy"
-        ],
-        "ans": 0,
-        "exp": "四者之中用最高級；easy 去 y 加 <code>-iest</code>。"
-    },
-    {
-        "skill": "2-3",
-        "q": "The blue whale is ________ of all animals.",
-        "zh": "藍鯨是所有動物中最大的。",
-        "options": [
-            "larger",
-            "the largest",
-            "the larger",
-            "most large"
-        ],
-        "ans": 1,
-        "exp": "<code>of all animals</code> 是三者以上比較範圍，用 <code>the largest</code>。"
-    },
-    {
-        "skill": "2-4",
-        "q": "Of the two brothers, Jack is ________.",
-        "zh": "兩兄弟之中，Jack 是比較高的那一位。",
-        "options": [
-            "the taller",
-            "the tallest",
-            "taller than",
-            "tallest"
-        ],
-        "ans": 0,
-        "exp": "兩者中較……的一個，用 <code>the + 比較級 + of the two</code>。"
-    },
-    {
-        "skill": "2-4",
-        "q": "Which is ________ of the two bags?",
-        "zh": "兩個包包中，哪一個比較便宜？",
-        "options": [
-            "the cheaper",
-            "the cheapest",
-            "cheaper than",
-            "most cheap"
-        ],
-        "ans": 0,
-        "exp": "限定兩者時，用 <code>the cheaper of the two</code>，不是最高級。"
-    },
-    {
-        "skill": "2-4",
-        "q": "Mary is ________ of the two students.",
-        "zh": "兩位學生中，Mary 比較用功。",
-        "options": [
-            "the more hard-working",
-            "the most hard-working",
-            "more hard-working than",
-            "most hard-working"
-        ],
-        "ans": 0,
-        "exp": "兩者中較……的一位，用 <code>the more hard-working of the two</code>。"
-    },
-    {
-        "skill": "2-5",
-        "q": "________ is the tallest student in your class?",
-        "zh": "你們班最高的學生是誰？",
-        "options": [
-            "Which",
-            "Who",
-            "What",
-            "Whose"
-        ],
-        "ans": 1,
-        "exp": "詢問「誰是……」時用 <code>Who</code>。"
-    },
-    {
-        "skill": "2-5",
-        "q": "________ subject is the most difficult, math, English, or science?",
-        "zh": "數學、英文、自然，哪一科最難？",
-        "options": [
-            "Who",
-            "Which",
-            "Where",
-            "How"
-        ],
-        "ans": 1,
-        "exp": "從明確選項中選擇時，用 <code>Which + 名詞</code>。"
-    },
-    {
-        "skill": "2-5",
-        "q": "Which animal is ________, the elephant, the horse, or the dog?",
-        "zh": "大象、馬和狗，哪一種動物最大？",
-        "options": [
-            "bigger",
-            "the biggest",
-            "the bigger",
-            "biggest than"
-        ],
-        "ans": 1,
-        "exp": "三者比較要用最高級 <code>the biggest</code>。"
-    },
-    {
-        "skill": "2-6",
-        "q": "Kevin is taller than ________ student in his class.",
-        "zh": "Kevin 比班上所有學生都高。（Kevin 不在該班）",
-        "options": [
-            "any",
-            "any other",
-            "all the other",
-            "the most"
-        ],
-        "ans": 0,
-        "exp": "比較對象不包含主詞時，可用 <code>than any + 單數名詞</code>。"
-    },
-    {
-        "skill": "2-6",
-        "q": "This river is longer than ________ rivers in this country.",
-        "zh": "這條河比這個國家的所有河流都長。（不包含此河）",
-        "options": [
-            "all the",
-            "any other",
-            "the all",
-            "every other"
-        ],
-        "ans": 0,
-        "exp": "比較對象不包含主詞時，可用 <code>than all the + 複數名詞</code>。"
-    },
-    {
-        "skill": "2-6",
-        "q": "Mia is more careful than any nurse in that hospital. This means Mia ________.",
-        "zh": "此句表示 Mia 不屬於那間醫院的護士群。",
-        "options": [
-            "must be a nurse there",
-            "is not one of the nurses there",
-            "is the least careful nurse",
-            "is as careful as every nurse"
-        ],
-        "ans": 1,
-        "exp": "<code>than any nurse</code> 通常表示主詞不在該比較群體內。"
-    },
-    {
-        "skill": "2-7",
-        "q": "Leo is taller than ________ boy in his class.",
-        "zh": "Leo 比班上其他任何男孩都高。（Leo 也是班上的男孩）",
-        "options": [
-            "any",
-            "any other",
-            "all other",
-            "the other"
-        ],
-        "ans": 1,
-        "exp": "主詞包含在比較群體內，需排除自己：<code>than any other + 單數名詞</code>。"
-    },
-    {
-        "skill": "2-7",
-        "q": "This book is more useful than ________ books on the shelf.",
-        "zh": "這本書比架上其他所有書都實用。",
-        "options": [
-            "all the other",
-            "any",
-            "the all other",
-            "all other the"
-        ],
-        "ans": 0,
-        "exp": "主詞包含在同一群體內，用 <code>than all the other + 複數名詞</code>。"
-    },
-    {
-        "skill": "2-7",
-        "q": "Taipei 101 is taller than any other ________ in Taiwan.",
-        "zh": "台北 101 比台灣其他任何建築物都高。",
-        "options": [
-            "buildings",
-            "building",
-            "build",
-            "built"
-        ],
-        "ans": 1,
-        "exp": "<code>any other</code> 後接單數名詞：<code>any other building</code>。"
-    },
-    {
-        "skill": "2-7",
-        "q": "Amy runs faster than all the other ________ on the team.",
-        "zh": "Amy 跑得比隊上其他所有選手都快。",
-        "options": [
-            "runner",
-            "runners",
-            "running",
-            "runs"
-        ],
-        "ans": 1,
-        "exp": "<code>all the other</code> 後接複數名詞：<code>runners</code>。"
-    },
-    {
-        "skill": "2-8",
-        "q": "No other mountain in Taiwan is ________ than Yushan.",
-        "zh": "台灣沒有其他山比玉山更高。",
-        "options": [
-            "high",
-            "higher",
-            "highest",
-            "the highest"
-        ],
-        "ans": 1,
-        "exp": "<code>No other + 單數名詞 + be + 比較級 + than...</code>。"
-    },
-    {
-        "skill": "2-8",
-        "q": "No other students in the class ________ as diligent as Tina.",
-        "zh": "班上沒有其他學生像 Tina 一樣用功。",
-        "options": [
-            "is",
-            "are",
-            "does",
-            "has"
-        ],
-        "ans": 1,
-        "exp": "主詞 students 是複數，be 動詞要用 <code>are</code>。"
-    },
-    {
-        "skill": "2-8",
-        "q": "No other city in Taiwan is larger than New Taipei City. New Taipei City is ________ city in Taiwan.",
-        "zh": "將 no other 句型改寫成最高級句型。",
-        "options": [
-            "the larger",
-            "the largest",
-            "larger than",
-            "most large"
-        ],
-        "ans": 1,
-        "exp": "<code>No other...比較級 than...</code> 可改寫為 <code>the + 最高級</code>。"
-    },
-    {
-        "skill": "2-review",
-        "q": "The red pencil is shorter than the yellow one, and the yellow pencil is shorter than the blue one. Which is correct?",
-        "zh": "根據長度關係選出正確句子。",
-        "options": [
-            "The blue pencil is the shortest.",
-            "The yellow pencil is the longest.",
-            "The red pencil is the shortest.",
-            "The red pencil is longer than the blue pencil."
-        ],
-        "ans": 2,
-        "exp": "紅筆比黃筆短，黃筆又比藍筆短，所以紅筆是三枝中最短的。"
+        "exp": "四者比較使用副詞最高級：<code>the earliest of the four</code>。"
     }
 ];
 
 // PART 2: Cloze 5 questions
-const clozePassage = "Emma and Jason are choosing a place for their class trip.\n\nEmma: Green Hill is {31} highest place in this area. The view there is beautiful.\nJason: Yes, but Blue Lake is {32} of the two places, so it may be easier for everyone to reach.\nEmma: That’s true. Still, Green Hill is more exciting than any {33} place near our town.\nJason: Maybe, but no other place is {34} relaxing than Blue Lake.\nEmma: Then which place is {35} choice for our class? Let’s ask everyone.";
+const clozePassage = `Students are preparing for the school talent show.
+
+Tina practices the piano {31} every day. She wants to play as {32} as her older sister. At first, Tina made many mistakes, but now she is playing {33} and better. Jason also practices every day, but Tina plays more carefully than any {34} student in their group. On Friday, their teacher said Tina performed the {35} of all.`;
 
 const clozeQuestions = [
     {
         "ref": 31,
         "options": [
-            "a",
-            "an",
-            "the",
-            "X"
+            "carefully",
+            "careful",
+            "more careful",
+            "carefulness"
         ],
-        "ans": 2,
-        "exp": "最高級前通常加定冠詞 <code>the</code>：<code>the highest place</code>。"
+        "ans": 0,
+        "exp": "修飾動詞 practices 要使用副詞 <code>carefully</code>。"
     },
     {
         "ref": 32,
         "options": [
-            "the nearer",
-            "the nearest",
-            "nearer than",
-            "the most near"
+            "good",
+            "better",
+            "well",
+            "best"
         ],
-        "ans": 0,
-        "exp": "兩個地點之中較近的，用 <code>the nearer of the two</code>。"
+        "ans": 2,
+        "exp": "同等比較使用 <code>as + 副詞原形 + as</code>：as well as。"
     },
     {
         "ref": 33,
         "options": [
-            "another",
-            "other",
-            "the other",
-            "others"
+            "best",
+            "better",
+            "more good",
+            "well"
         ],
         "ans": 1,
-        "exp": "Green Hill 不屬於「城鎮附近的其他地方」這個比較群時，用 <code>than any other place</code>；此處 blank 後已有 place，因此填 <code>other</code>。"
+        "exp": "「越來越好」是 <code>better and better</code>。"
     },
     {
         "ref": 34,
         "options": [
-            "more",
-            "most",
-            "much",
-            "the most"
+            "another",
+            "others",
+            "the other",
+            "other"
         ],
-        "ans": 0,
-        "exp": "<code>No other place is more relaxing than...</code> 使用比較級。"
+        "ans": 3,
+        "exp": "Tina 也在同一組學生中，因此用 <code>than any other + 單數名詞</code>。"
     },
     {
         "ref": 35,
         "options": [
+            "best",
             "better",
-            "the better",
-            "the best",
-            "best than"
+            "most well",
+            "more well"
         ],
-        "ans": 2,
-        "exp": "在所有可能選擇中問「最好的」，用最高級 <code>the best choice</code>。"
+        "ans": 0,
+        "exp": "三者以上比較且句中已有 the，使用副詞最高級 <code>best</code>：performed the best of all。"
     }
 ];
 
@@ -894,47 +896,47 @@ const hwQuestions = [
     {
         "type": "fill",
         "num": 36,
-        "prompt": "請寫出 thin 的最高級。",
-        "template": "thin → ______________________________",
-        "hint": "短母音＋子音結尾，重複字尾再加 -est。",
-        "answer": "the thinnest",
-        "exp": "thin 要重複 n 再加 -est：<code>the thinnest</code>。"
+        "prompt": "請寫出 comfortable 的副詞形式。",
+        "template": "comfortable → ______________________________",
+        "hint": "字尾是 -le：去 e 再加 y。",
+        "answer": "comfortably",
+        "exp": "comfortable 去掉 e 再加 y：<code>comfortably</code>。"
     },
     {
         "type": "fill",
         "num": 37,
-        "prompt": "請將句子改寫成正確句子：Math is more difficult subject of all.",
-        "template": "Math is ______________________________.",
-        "hint": "最高級前要有 the；difficult 用 most。",
-        "answer": "Math is the most difficult subject of all.",
-        "exp": "三者以上比較用 <code>the most difficult</code>。"
+        "prompt": "請改正句中的副詞錯誤：He is a careful driver. He drives very careful.",
+        "template": "He drives ______________________________.",
+        "hint": "修飾 drives 要使用副詞；保留 very。",
+        "answer": "He drives very carefully.",
+        "exp": "careful 是形容詞；修飾動詞 drives 要改成副詞 <code>carefully</code>。"
     },
     {
         "type": "compose",
         "num": 38,
-        "prompt": "請依提示造句，使用 of the two。",
-        "template": "Jack / tall / the two brothers",
-        "hint": "兩者中較……的一位：the + 比較級 + of the two。",
-        "answer": "Jack is the taller of the two brothers.",
-        "exp": "兩者比較不可用最高級，應寫 <code>the taller of the two brothers</code>。"
+        "prompt": "請依提示造句，使用 as...as。",
+        "template": "He / can run / fast / I",
+        "hint": "句型：as + 副詞原形 + as。",
+        "answer": "He can run as fast as I.",
+        "exp": "同等比較使用 <code>as fast as</code>。"
     },
     {
         "type": "compose",
         "num": 39,
-        "prompt": "請將最高級句型改寫成 than any other。",
-        "template": "Leo is the tallest boy in his class.",
-        "hint": "Leo 也在班上，因此用 any other + 單數名詞。",
-        "answer": "Leo is taller than any other boy in his class.",
-        "exp": "主詞屬於比較群體時，要排除自己：<code>than any other boy</code>。"
+        "prompt": "請針對畫線概念造出 how 問句：She teaches English happily.",
+        "template": "詢問她「如何」教英文。",
+        "hint": "How + does + 主詞 + 原形動詞...?",
+        "answer": "How does she teach English?",
+        "exp": "詢問做事的方式使用 <code>How does she teach English?</code>"
     },
     {
         "type": "compose",
         "num": 40,
-        "prompt": "請用 no other 與比較級改寫句子。",
-        "template": "Yushan is the highest mountain in Taiwan.",
-        "hint": "句型：No other + 單數名詞 + be + 比較級 + than...",
-        "answer": "No other mountain in Taiwan is higher than Yushan.",
-        "exp": "最高級可改寫為 <code>No other mountain...is higher than...</code>。"
+        "prompt": "請根據三人的資訊，用副詞最高級造句。",
+        "template": "Ken works 10 hours a day. Kevin works 12 hours. Kitty works 13 hours. (hard)",
+        "hint": "三者比較：the + 副詞最高級。",
+        "answer": "Kitty works the hardest.",
+        "exp": "Kitty 工作時間最長，因此寫 <code>Kitty works the hardest.</code>"
     }
 ];
 
@@ -1360,7 +1362,7 @@ async function submitToFirebase(scoreMC, scoreCloze) {
         const submission = {
             studentName,
             studentSeat: parseInt(studentSeat),
-            unit: 'B4U2',
+            unit: 'B4U3',
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             mcAnswers: mcSel.map((sel, i) => ({
                 question: i + 1,
